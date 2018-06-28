@@ -11,7 +11,7 @@ app.get('/api/hello', (req, res) => {
 
 app.get("/api/search", (req, res) => {
  client.search({
-   categories: "asian",
+   title: "asian",
    location: "Toronto, on",
  }).then(response => {
    const businesseNames = response.jsonBody.businesses
@@ -25,6 +25,8 @@ function getName(array) {
   var listOfRestaurants = [];
  for(var i = 0; i < array.length; i++){
    listOfRestaurants.push(array[i].name)
+   // listOfRestaurants.push(array[i].coordinates)
+   listOfRestaurants.push(array[i].categories[0].alias)
  }
  return listOfRestaurants;
 }
