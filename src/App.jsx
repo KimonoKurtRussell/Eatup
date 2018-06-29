@@ -13,7 +13,8 @@ constructor(props) {
     name: '',
     price: '',
     location: '',
-    category: ''
+    category: '',
+    current_card: 0
   };
 }
 
@@ -61,19 +62,13 @@ constructor(props) {
       console.log('data', data)
     })
     .catch(err => console.log(err))
-  //   axios.post('/api/prefernces', {
-  //     data: {
-  //         name: this.state.name,
-  //         price: this.state.price,
-  //         location: this.state.location,
-  //         category: this.state.category
-  //     };
-  //   }).then(function (response) {
-  //   console.log(response);
-  // })
-  // .catch(function (error) {
-  //   console.log(error);
-  // });
+  }
+
+  increment = (e) => {
+    e.preventDefault()
+    this.setState({
+      current_card: this.state.current_card + 1
+    });
   }
 
   render() {
@@ -93,15 +88,21 @@ constructor(props) {
             />
         </div>
         <div>
-          {this.state.response.map(res => (
-            <div>
+          <button onClick={this.increment}>
+            Next Option
+          </button>
+        </div>
+        <div>
+          {this.state.response.map((res, i) => (
+        <div style={{display: i === this.state.current_card ? 'block' : 'none'}}>>
               <h5>{res.name}</h5>
               <h5>{res.rating}</h5>
               <p class="phone">{res.phone}</p>
               <img src={res.image} alt={res.name}  />
+              <h5>LOCATION: {res.location}</h5>
        </div>
-     ))}
-    </div>
+     ))};
+       </div>
       </div>
     );
   }

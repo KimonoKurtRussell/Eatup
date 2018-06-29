@@ -13,14 +13,6 @@ app.use(bodyParser.json())
 
 const port = process.env.PORT || 8080;
 
-// app.post('/api', (req, res) => {
-//   const location = req.body.location
-//   const category = req.body.category
-//   console.log(location)
-//   console.log(category)
-//   res.json({ express: 'Hello From Express' });
-// });
-
 app.post("/api/search/:location/:category", (req, res) => {
 const location = req.params.location
 const category = req.params.category
@@ -35,7 +27,7 @@ const category = req.params.category
 
 
  businesses.map(business => {
-   const data = {name: business.name, image: business.image_url, rating: business.rating, phone: business.phone };
+   const data = {name: business.name, image: business.image_url, rating: business.rating, phone: business.phone, location: business.location.display_address};
    restaurantData.push(data)
  })
 
@@ -47,17 +39,5 @@ const category = req.params.category
   console.log(e);
 });
 });
-
-// function getName(array) {
-//   var listOfRestaurants = [];
-//  for(var i = 0; i < array.length; i++){
-//    listOfRestaurants.push(array[i].name)
-//    // listOfRestaurants.push(array[i].coordinates)
-//    listOfRestaurants.push(array[i].categories[0].alias)
-//  }
-//  return listOfRestaurants;
-// }
-
-
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
