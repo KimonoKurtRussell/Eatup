@@ -42,9 +42,7 @@ constructor(props) {
       category: e.target.category.value
     });
 
-  //   // Enter ajax post here to pass state to server
-  //   // Multiple states
-    fetch('http://localhost:8080/api', {
+    fetch(`http://localhost:8080/api/search/${e.target.location.value}/${e.target.category.value}`, {
       method: "POST",
       headers: {
         'Content-type': 'application/json'

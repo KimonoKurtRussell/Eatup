@@ -13,25 +13,28 @@ app.use(bodyParser.json())
 
 const port = process.env.PORT || 8080;
 
-app.post('/api', (req, res) => {
-  console.log(req.body)
-  res.json({ express: 'Hello From Express' });
-});
+// app.post('/api', (req, res) => {
+//   const location = req.body.location
+//   const category = req.body.category
+//   console.log(location)
+//   console.log(category)
+//   res.json({ express: 'Hello From Express' });
+// });
 
-app.get("/api/search", (req, res) => {
+app.post("/api/search/:location/:category", (req, res) => {
+const location = req.params.location
+const category = req.params.category
+console.log(location)
  client.search({
-   title: "asian",
-   location: "Toronto, on",
+   // categories: category,
+   location: location
  }).then(response => {
    const businesseNames = response.jsonBody.businesses
+   console.log(businesseNames)
    res.send(getName(businesseNames));
  }).catch(e => {
    console.log(e);
  });
-});
-
-app.get("/api/preferences", (req, res) => {
-
 });
 
 function getName(array) {
