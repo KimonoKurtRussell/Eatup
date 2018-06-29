@@ -9,7 +9,7 @@ class App extends Component {
 constructor(props) {
   super(props)
   this.state = {
-    response: '',
+    response: [],
     name: '',
     price: '',
     location: '',
@@ -24,8 +24,9 @@ constructor(props) {
   }
 
   callApi = async () => {
-    const response = await fetch('/api/search');
+    const response = await fetch('/api/search/:location/:category');
     const body = await response.json();
+    console.log('BODY', body)
 
     if (response.status !== 200) throw Error(body.message);
 
@@ -56,7 +57,8 @@ constructor(props) {
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data)
+      this.setState({response: data})
+      console.log('data', data)
     })
     .catch(err => console.log(err))
   //   axios.post('/api/prefernces', {
@@ -91,8 +93,15 @@ constructor(props) {
             />
         </div>
         <div>
-          <p>{this.state.response}</p>
-        </div>
+          {this.state.response.map(res => (
+            <div>
+              <h5>{res.name}</h5>
+              <h5>{res.rating}</h5>
+              <p class="phone">{res.phone}</p>
+              <img src={res.image} alt={res.name}  />
+       </div>
+     ))}
+    </div>
       </div>
     );
   }

@@ -24,27 +24,40 @@ const port = process.env.PORT || 8080;
 app.post("/api/search/:location/:category", (req, res) => {
 const location = req.params.location
 const category = req.params.category
-console.log(location)
+// console.log(location)
  client.search({
    // categories: category,
    location: location
  }).then(response => {
-   const businesseNames = response.jsonBody.businesses
-   console.log(businesseNames)
-   res.send(getName(businesseNames));
- }).catch(e => {
-   console.log(e);
- });
+   const businesses = response.jsonBody.businesses;
+ const restaurantData = [];
+ // console.log(response.jsonBody.businesses)
+
+
+ businesses.map(business => {
+   const data = {name: business.name, image: business.image_url, rating: business.rating, phone: business.phone };
+   restaurantData.push(data)
+ })
+
+ console.log('restaurantData', restaurantData);
+
+  res.send(restaurantData);
+
+}).catch(e => {
+  console.log(e);
+});
 });
 
-function getName(array) {
-  var listOfRestaurants = [];
- for(var i = 0; i < array.length; i++){
-   listOfRestaurants.push(array[i].name)
-   // listOfRestaurants.push(array[i].coordinates)
-   listOfRestaurants.push(array[i].categories[0].alias)
- }
- return listOfRestaurants;
-}
+// function getName(array) {
+//   var listOfRestaurants = [];
+//  for(var i = 0; i < array.length; i++){
+//    listOfRestaurants.push(array[i].name)
+//    // listOfRestaurants.push(array[i].coordinates)
+//    listOfRestaurants.push(array[i].categories[0].alias)
+//  }
+//  return listOfRestaurants;
+// }
+
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
