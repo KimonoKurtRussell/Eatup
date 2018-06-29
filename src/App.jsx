@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// import axios from 'axios';
 import logo from './logo.svg';
 import './App.css';
 import Form from './components/form'
@@ -32,15 +33,47 @@ constructor(props) {
   };
 
   getUserInfo = (e) => {
-    console.log(e.target.name)
     e.preventDefault();
+    console.log(e.target.price.value)
     this.setState({
       name: e.target.name.value,
       price: e.target.price.value,
       location: e.target.location.value,
       category: e.target.category.value
     });
-    // Enter ajax post here
+
+  //   // Enter ajax post here to pass state to server
+  //   // Multiple states
+    fetch('http://localhost:8080/api', {
+      method: "POST",
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: e.target.name.value,
+        price: e.target.price.value,
+        location: e.target.location.value,
+        category: e.target.category.value
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+    })
+    .catch(err => console.log(err))
+  //   axios.post('/api/prefernces', {
+  //     data: {
+  //         name: this.state.name,
+  //         price: this.state.price,
+  //         location: this.state.location,
+  //         category: this.state.category
+  //     };
+  //   }).then(function (response) {
+  //   console.log(response);
+  // })
+  // .catch(function (error) {
+  //   console.log(error);
+  // });
   }
 
   render() {
@@ -59,7 +92,9 @@ constructor(props) {
             category = {this.state.category}
             />
         </div>
-        <p>{this.state.response}</p>
+        <div>
+          <p>{this.state.response}</p>
+        </div>
       </div>
     );
   }

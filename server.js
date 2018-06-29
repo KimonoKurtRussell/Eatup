@@ -1,12 +1,21 @@
 const express = require('express');
 const yelp = require('yelp-fusion');
+const bodyParser = require('body-parser')
+const cors = require('cors')
 const client = yelp.client("hxp7yqGWKyaIvgLRT0d4946GZRAKUxCTJy3mHGG0Es-UpLfc71F-BAWXWwFOLipfLZTPIUf3qw3cB8HXndgyok_pkQhW19SUaU0d72IDXrzqtOJRd1UMpfn4byg1W3Yx");
-
 const app = express();
+
+app.use(cors());
+
+// app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json())
+
 const port = process.env.PORT || 8080;
 
-app.get('/api/hello', (req, res) => {
-  res.send({ express: 'Hello From Express' });
+app.post('/api', (req, res) => {
+  console.log(req.body)
+  res.json({ express: 'Hello From Express' });
 });
 
 app.get("/api/search", (req, res) => {
@@ -19,6 +28,10 @@ app.get("/api/search", (req, res) => {
  }).catch(e => {
    console.log(e);
  });
+});
+
+app.get("/api/preferences", (req, res) => {
+
 });
 
 function getName(array) {
