@@ -18,7 +18,7 @@ const location = req.params.location
 const category = req.params.category
 // console.log(location)
  client.search({
-   // categories: category,
+   categories: category,
    location: location
  }).then(response => {
    const businesses = response.jsonBody.businesses;
@@ -27,7 +27,15 @@ const category = req.params.category
 
 
  businesses.map(business => {
-   const data = {name: business.name, image: business.image_url, rating: business.rating, phone: business.phone, location: business.location.display_address};
+   const data = {name: business.name,
+     image: business.image_url,
+     rating: business.rating,
+     phone: business.phone,
+     location: business.location.display_address,
+     lat: business.coordinates.latitude,
+     long: business.coordinates.longitude,
+      money: business.price
+   };
    restaurantData.push(data)
  })
 

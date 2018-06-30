@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 // import axios from 'axios';
-import logo from './logo.svg';
 import './App.css';
 import Form from './components/form'
 import User from './components/user'
+import Navbar from './components/navbar'
 
 class App extends Component {
 constructor(props) {
@@ -24,19 +24,17 @@ constructor(props) {
       .catch(err => console.log(err));
   }
 
+// Testing only function
   callApi = async () => {
     const response = await fetch('/api/search/:location/:category');
     const body = await response.json();
     console.log('BODY', body)
-
     if (response.status !== 200) throw Error(body.message);
-
     return body;
   };
 
   getUserInfo = (e) => {
     e.preventDefault();
-    console.log(e.target.price.value)
     this.setState({
       name: e.target.name.value,
       price: e.target.price.value,
@@ -64,6 +62,7 @@ constructor(props) {
     .catch(err => console.log(err))
   }
 
+// Flip cards that you don't like
   increment = (e) => {
     e.preventDefault()
     this.setState({
@@ -71,13 +70,17 @@ constructor(props) {
     });
   }
 
+  decrease = (e) => {
+   e.preventDefault()
+   this.setState({
+     current_card: this.state.current_card - 1
+   });
+ }
+
   render() {
     return (
       <div className="Eat-Up">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
+        <Navbar />
         <div>
           <Form getUserInfo = {this.getUserInfo}/>
             <User
@@ -88,18 +91,28 @@ constructor(props) {
             />
         </div>
         <div>
-          <button onClick={this.increment}>
-            Next Option
-          </button>
-        </div>
+       {this.state.current_card < 19 &&
+        <button onClick={this.increment}>
+          Next Option
+        </button>
+        }
+        {this.state.current_card > 0 &&
+        <button onClick={this.decrease}>
+         previous option
+         </button>
+       }
+      </div>
         <div>
           {this.state.response.map((res, i) => (
-        <div style={{display: i === this.state.current_card ? 'block' : 'none'}}>>
-              <h5>{res.name}</h5>
-              <h5>{res.rating}</h5>
-              <p class="phone">{res.phone}</p>
-              <img src={res.image} alt={res.name}  />
-              <h5>LOCATION: {res.location}</h5>
+        <div style={{display: i === this.state.current_card ? 'block' : 'none'}}>
+          <h5>{res.name}, {res.money}</h5>
+         <h5>{res.rating}</h5>
+         <p class="phone">{res.phone}</p>
+         <h5>LOCATION: {res.location[0]}</h5>
+         <h5>LOCATION: {res.location[1]}</h5>
+         <h5>lat: {res.lat}</h5>
+         <h5>long: {res.long}</h5>
+         <img src={res.image} alt={res.name}  />
        </div>
      ))};
        </div>
