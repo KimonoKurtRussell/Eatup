@@ -5,7 +5,9 @@ class Navbar extends React.Component {
     return (
       <div>
       <header className="App-header">
-        <h1 className="App-title">Welcome to React</h1>
+        <h1 className="App-title">Eat-up</h1>
+        <button>Login</button>
+        <button>Sign-Up</button>
       </header>
       </div>
     );

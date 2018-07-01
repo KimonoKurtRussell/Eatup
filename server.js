@@ -6,46 +6,50 @@ const client = yelp.client("hxp7yqGWKyaIvgLRT0d4946GZRAKUxCTJy3mHGG0Es-UpLfc71F-
 const app = express();
 
 app.use(cors());
-
-// app.use(bodyParser.urlencoded({ extended: false }))
-// parse application/json
 app.use(bodyParser.json())
 
 const port = process.env.PORT || 8080;
 
-app.post("/api/search/:location/:category", (req, res) => {
-const location = req.params.location
-const category = req.params.category
-// console.log(location)
- client.search({
-   categories: category,
-   location: location
- }).then(response => {
-   const businesses = response.jsonBody.businesses;
- const restaurantData = [];
+app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
+  const category = req.params.category
+  const radius = req.params.radius
+  const latitude = req.params.latitude
+  const longitude = req.params.longitude
+  console.log(latitude)
+  console.log(longitude)
+  client.search({
+    latitude: latitude,
+    longitude: longitude,
+    categories: category,
+    radius: radius
+  }).then(response => {
  // console.log(response.jsonBody.businesses)
 
+ const businesses = response.jsonBody.businesses
+     console.log(businesses)
+     const restaurantData = [];
 
- businesses.map(business => {
-   const data = {name: business.name,
-     image: business.image_url,
-     rating: business.rating,
-     phone: business.phone,
-     location: business.location.display_address,
-     lat: business.coordinates.latitude,
-     long: business.coordinates.longitude,
-      money: business.price
-   };
-   restaurantData.push(data)
- })
+     businesses.map(business => {
+           const data = {
+            name: business.name,
+            image: business.image_url,
+            address: business.location.display_address,
+            phone:business.display_phone,
+            money: business.price,
+            rating: business.rating,
+            latitude: business.coordinates.latitude,
+            longitude: business.coordinates.longitude
+          };
+           restaurantData.push(data)
 
- console.log('restaurantData', restaurantData);
+         })
 
-  res.send(restaurantData);
+        res.send(restaurantData);
 
-}).catch(e => {
-  console.log(e);
-});
-});
+      }).catch(e => {
+        console.log(e);
+      });
+
+    });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
