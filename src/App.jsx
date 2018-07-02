@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 // import axios from 'axios';
 import './App.css';
 import Form from './components/form'
-import Navbar from './components/navbar'
 import Modal from './components/modal'
+import Registration from './components/registration'
 
 class App extends Component {
 constructor(props) {
@@ -16,25 +16,51 @@ constructor(props) {
       latitude: 0,
       longitude: 0,
       isModalOpen: false,
+      username: '',
+      email: '',
+      password: '',
+      users: [],
   };
 }
 
-  componentDidMount() {
-    this.callApi()
-      .then(res => this.setState({ response: res }))
-      .catch(err => console.log(err));
-  }
-
-// Testing only function
-  callApi = async () => {
-    const response = await fetch('/api/search/:location/:category');
-    const body = await response.json();
-    console.log('BODY', body)
-    if (response.status !== 200) throw Error(body.message);
-    return body;
+getRegistration(e) {
+  console.log(e.target.username.value)
+  console.log("hello world")
+  e.preventDefault();
+  this.setState({
+    username: e.target.username.value,
+    email: e.target.email.value,
+    password: e.target.password.value,
+    isModalOpen: false
+  });
+  // User Registration form data
+    fetch(`http://localhost:8080/users/${e.target.username.value}/${e.target.email.value}/${e.target.password.value}`, {
+      method: "POST",
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: e.target.username.value,
+        email: e.target.email.value,
+        password: e.target.password.value,
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      this.setState({ users: data})
+      console.log(data)
+    })
+    .catch(err => console.log(err))
   };
 
-  getUserInput = (e) => {
+
+
+  componentDidMount() {
+
+  }
+
+// Set preferences for Eat-up search
+getUserInput(e) {
  e.preventDefault();
  this.setState({
    category: e.target.category.value,
@@ -59,15 +85,15 @@ constructor(props) {
       console.log(data)
     })
     .catch(err => console.log(err))
-  }
+  };
 
-  geoFindMe = () => {
+  // Set local browsers geo-cordinates
+  geoFindMe() {
     var output = document.getElementById("out");
     if (!navigator.geolocation){
       output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
       return;
     }
-
     var success = (position) => {
       var latitude  = position.coords.latitude;
       var longitude = position.coords.longitude;
@@ -75,7 +101,6 @@ constructor(props) {
 
       output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
     }
-
     function error() {
       output.innerHTML = "Unable to retrieve your location";
     }
@@ -84,20 +109,21 @@ constructor(props) {
   }
 
 // Flip cards that you don't like
-  increment = (e) => {
+  increment(e) {
     e.preventDefault()
     this.setState({
       current_card: this.state.current_card + 1
     });
   }
 
-  decrease = (e) => {
+  decrease(e) {
    e.preventDefault()
    this.setState({
      current_card: this.state.current_card - 1
    });
  }
 
+// Login pop-up
  openModal() {
       this.setState({ isModalOpen: true })
     }
@@ -109,16 +135,25 @@ constructor(props) {
   render() {
     return (
       <div className="Eat-Up">
-        <input type='button' value='login' onClick={this.login}/>
-        <Navbar />
-          <div>
-            <button onClick={() => this.openModal()}>Open modal</button>
-            <Modal isOpen={this.state.isModalOpen} onClose={() => this.closeModal()}>
-              <h1>Modal title</h1>
-              <p>hello</p>
-              <p><button onClick={() => this.closeModal()}>Close</button></p>
-            </Modal>
-          </div>
+
+          <header className="App-header">
+            <h1 className="App-title">Eat-up</h1>
+
+              <div>
+                <button onClick={() => this.openModal()}>Registration</button>
+                <Modal isOpen={this.state.isModalOpen} onClose={() => this.closeModal()}>
+                  <Registration getRegistration = {(e)=>this.getRegistration(e)}/>
+                  <p><button onClick={() => this.closeModal()}>Close</button></p>
+                </Modal>
+              </div>
+              <br></br>
+              <div>
+                <button onClick={() => this.openModal()}>Login</button>
+                <Modal isOpen={this.state.isModalOpen} onClose={() => this.closeModal()}>
+                </Modal>
+              </div>
+          </header>
+
         <div>
           <Form getUserInput = {this.getUserInput}/>
         </div>
@@ -137,6 +172,7 @@ constructor(props) {
       </div>
 
       <p><button onClick={this.geoFindMe}>Use my location</button></p>
+
       <div id="out"></div>
       <div>
       {this.state.response.map((res, i) => (

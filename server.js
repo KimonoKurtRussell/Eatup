@@ -10,6 +10,15 @@ app.use(bodyParser.json())
 
 const port = process.env.PORT || 8080;
 
+app.post('/users/:username/:email/:password', (req, res) => {
+  const username = req.params.username
+  const email = req.params.email
+  const password = req.params.password
+  console.log(username)
+  console.log(email)
+  console.log(password)
+});
+
 app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
   const category = req.params.category
   const radius = req.params.radius
