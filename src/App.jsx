@@ -4,15 +4,15 @@ import './App.css';
 import Form from './components/form'
 import Modal from './components/modal'
 import Registration from './components/registration'
+import Swipes from './components/swipes.jsx'
 
 class App extends Component {
 constructor(props) {
   super(props)
   this.state = {
-    response: [],
+    data: [],
       category: '',
       radius: 0,
-      current_card: 0,
       latitude: 0,
       longitude: 0,
       isModalOpen: false,
@@ -25,7 +25,6 @@ constructor(props) {
 
 getRegistration(e) {
   console.log(e.target.username.value)
-  console.log("hello world")
   e.preventDefault();
   this.setState({
     username: e.target.username.value,
@@ -60,7 +59,7 @@ getRegistration(e) {
   }
 
 // Set preferences for Eat-up search
-getUserInput(e) {
+getUserInput = (e) => {
  e.preventDefault();
  this.setState({
    category: e.target.category.value,
@@ -81,7 +80,7 @@ getUserInput(e) {
     })
     .then(res => res.json())
     .then(data => {
-      this.setState({ response: data})
+      this.setState({ data: data})
       console.log(data)
     })
     .catch(err => console.log(err))
@@ -99,29 +98,16 @@ getUserInput(e) {
       var longitude = position.coords.longitude;
       this.setState({latitude: latitude, longitude: longitude});
 
-      output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
+      // output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
+      console.log(longitude)
+      console.log(latitude)
     }
     function error() {
       output.innerHTML = "Unable to retrieve your location";
     }
-    output.innerHTML = "<p>Locating…</p>";
+    // output.innerHTML = "<p>Locating…</p>";
     navigator.geolocation.getCurrentPosition(success, error);
   }
-
-// Flip cards that you don't like
-  increment(e) {
-    e.preventDefault()
-    this.setState({
-      current_card: this.state.current_card + 1
-    });
-  }
-
-  decrease(e) {
-   e.preventDefault()
-   this.setState({
-     current_card: this.state.current_card - 1
-   });
- }
 
 // Login pop-up
  openModal() {
@@ -153,40 +139,18 @@ getUserInput(e) {
                 </Modal>
               </div>
           </header>
+          <div classname="Geo-finder">
+            {this.geoFindMe()}
+          </div>
 
         <div>
           <Form getUserInput = {this.getUserInput}/>
         </div>
 
-        <div>
-       {this.state.current_card < 19 &&
-        <button onClick={this.increment}>
-          Next Option
-        </button>
-        }
-        {this.state.current_card > 0 &&
-        <button onClick={this.decrease}>
-         previous option
-         </button>
-       }
-      </div>
-
-      <p><button onClick={this.geoFindMe}>Use my location</button></p>
-
       <div id="out"></div>
+
       <div>
-      {this.state.response.map((res, i) => (
-          <div style={{display: i === this.state.current_card ? 'block' : 'none'}}>
-            <h5>{res.name}</h5>
-            <h5>{res.address}</h5>
-            <h5>Phone: {res.phone}</h5>
-            <h5>Price: {res.money}</h5>
-            <h5>Rating: {res.rating}</h5>
-            <h5>Lat: {res.latitude}</h5>
-            <h5>Long: {res.longitude}</h5>
-            <img src={res.image} alt={res.name}/>
-          </div>
-        ))}
+        <Swipes data = {this.state.data} />
     </div>
 
     </div>
