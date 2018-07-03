@@ -4,6 +4,11 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const client = yelp.client("hxp7yqGWKyaIvgLRT0d4946GZRAKUxCTJy3mHGG0Es-UpLfc71F-BAWXWwFOLipfLZTPIUf3qw3cB8HXndgyok_pkQhW19SUaU0d72IDXrzqtOJRd1UMpfn4byg1W3Yx");
 const app = express();
+const cookieSession = require('cookie-session')
+app.use(cookieSession({
+  name: 'session',
+  keys: ['secret'],
+}));
 
 app.use(cors());
 app.use(bodyParser.json())
@@ -14,9 +19,10 @@ app.post('/users/:username/:email/:password', (req, res) => {
   const username = req.params.username
   const email = req.params.email
   const password = req.params.password
-  console.log(username)
-  console.log(email)
-  console.log(password)
+
+  console.log(username + "\n")
+  console.log(email + "\n")
+  console.log(password + "\n")
 });
 
 app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {

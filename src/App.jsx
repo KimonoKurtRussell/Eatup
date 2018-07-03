@@ -52,8 +52,6 @@ getRegistration(e) {
     .catch(err => console.log(err))
   };
 
-
-
   componentDidMount() {
 
   }
