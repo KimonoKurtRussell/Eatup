@@ -10,19 +10,33 @@ app.use(cookieSession({
   keys: ['secret'],
 }));
 
+const environment = process.env.NODE_ENV || 'development';
+require('dotenv').config();
+const configuration = require('./knexfile')[environment];    // require environment's settings from knexfile
+const knex = require('knex')(configuration);
+
+
+
 app.use(cors());
 app.use(bodyParser.json())
 
 const port = process.env.PORT || 8080;
 
+//Register user
 app.post('/users/:username/:email/:password', (req, res) => {
-  const username = req.params.username
-  const email = req.params.email
-  const password = req.params.password
-
-  console.log(username + "\n")
-  console.log(email + "\n")
-  console.log(password + "\n")
+  knex('users')
+  .returning('id')
+  .insert([{
+    name: req.params.username,
+    email: req.params.email,
+    password: req.params.password
+  }])
+  .then(function(id) {
+    req.session.user_id = id;
+  })
+  .catch(function(error) {
+    console.error("Error:",error);
+  });
 });
 
 app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
