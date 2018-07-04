@@ -4,6 +4,7 @@ exports.up = function(knex, Promise) {
     table.increments('id').primary()
     table.string('event_name').notNullable;
     table.string('restaurant_name').notNullable;
+    table.string('restaurant_address').notNullable
     table.string('description')
     table.string('event_start').notNullable;
     table.string('event_end').notNullable;

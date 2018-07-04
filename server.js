@@ -40,18 +40,18 @@ app.post('/users/:username/:email/:password', (req, res) => {
 });
 
 // Events
-app.post('/events/:eventName/:restaurantName/:description/:start/:end', (req, res) => {
+app.post('/events/:eventName/:restaurantName/:restaurantAddress/:description/:start/:end', (req, res) => {
  const eventName = req.params.eventName
  const restaurantName = req.params.restaurantName
  const description = req.params.description
  const start = req.params.start
  const end = req.params.end
-console.log(eventName)
  knex('events')
  .returning('id')
  .insert([{
    event_name: req.params.eventName,
    restaurant_name: req.params.restaurantName,
+   restaurant_address: req.params.restaurantAddress,
    description: req.params.description,
    event_start: req.params.start,
    event_end: req.params.end
@@ -80,7 +80,7 @@ app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
  // console.log(response.jsonBody.businesses)
 
  const businesses = response.jsonBody.businesses
-     console.log(businesses)
+
      const restaurantData = [];
 
      businesses.map(business => {

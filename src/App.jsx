@@ -81,9 +81,10 @@ getRegistration(e) {
        description: e.target.description.value,
        start: e.target.start.value,
        end: e.target.end.value,
+       restaurantAddress: e.target.restaurantAddress.value
      })
 
-   fetch(`http://localhost:8080/events/${e.target.eventName.value}/${e.target.restaurantName.value}/${e.target.description.value}/${e.target.start.value}/${e.target.end.value}` , {
+   fetch(`http://localhost:8080/events/${e.target.eventName.value}/${e.target.restaurantName.value}/${e.target.restaurantAddress.value}/${e.target.description.value}/${e.target.start.value}/${e.target.end.value}` , {
      method: "POST" ,
      // credentials: "include",
      headers: {
@@ -92,6 +93,7 @@ getRegistration(e) {
      body: JSON.stringify({
          eventName: e.target.eventName.value,
          restaurantName: e.target.restaurantName.value,
+         restaurantAddress: e.target.restaurantAddress.value,
          description: e.target.description.value,
          start: e.target.start.value,
          end: e.target.end.value,
