@@ -1,43 +1,57 @@
 import React, { Component } from 'react';
-// import axios from 'axios';
 import './App.css';
 import Form from './components/form'
 import Modal from './components/modal'
 import Registration from './components/registration'
 import Swipes from './components/swipes.jsx'
+import Login from './components/login.jsx'
 
 class App extends Component {
-constructor(props) {
-  super(props)
-  this.state = {
-    data: [],
-      category: '',
-      radius: 0,
-      latitude: 0,
-      longitude: 0,
-      isModalOpen: false,
-      username: '',
-      email: '',
-      password: '',
-      users: [],
-  };
-}
+  constructor(props) {
+    super(props)
+    this.state = {
+      data: [],
+        category: '',
+        radius: 0,
+        latitude: 0,
+        longitude: 0,
+        isRegistrationModalOpen: false,
+        isLoginModalOpen: false,
+        username: '',
+        email: '',
+        password: '',
+        currentUser: null,
+    };
+  }
 
-getRegistration(e) {
-  console.log(e.target.username.value)
-  e.preventDefault();
-  this.setState({
-    username: e.target.username.value,
-    email: e.target.email.value,
-    password: e.target.password.value,
-    isModalOpen: false
-  });
-  // User Registration form data
-    fetch(`http://localhost:8080/users/${e.target.username.value}/${e.target.email.value}/${e.target.password.value}`, {
+
+  getLogout() {
+    console.log('logging out')
+     // Here we are doing a post to the logout route in the server
+    fetch(`/users/logout`, {
       method: "POST",
       headers: {
         'Content-type': 'application/json'
       },
+      credentials: 'include',
+    })
+    .then(() => {
+      this.setState({currentUser: null});
+      // If the session is successfully removed then set this.state.currentUser to null
+    })
+    .catch(err => console.log(err))
+
+  };
+
+  getLogin(e) {
+    console.log('logging in')
+    e.preventDefault();
+    fetch(`/users/login`, {
+      method: "POST",
+      headers: {
+        'Content-type': 'application/json'
+      },
+      credentials: 'include',
       body: JSON.stringify({
         username: e.target.username.value,
         email: e.target.email.value,
@@ -46,12 +60,39 @@ getRegistration(e) {
     })
     .then(res => res.json())
     .then(data => {
-      this.setState({ users: data})
-      console.log(data)
+      this.setState({ currentUser: data})
+      console.log('App.jsx current user', data)
+    })
+    .catch(err => console.log(err))
+
+  };
+
+  getRegistration(e) {
+    e.preventDefault();
+    this.setState({
+      isRegistrationModalOpen: false
+    });
+
+  // User Registration form data
+    fetch(`/users/register`, {
+      method: "POST",
+      headers: {
+        'Content-type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        username: e.target.username.value,
+        email: e.target.email.value,
+        password: e.target.password.value,
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      this.setState({ currentUser: data})
+      console.log('App.jsx current user', data)
     })
     .catch(err => console.log(err))
   };
-
 
 
   componentDidMount() {
@@ -59,18 +100,19 @@ getRegistration(e) {
   }
 
 // Set preferences for Eat-up search
-getUserInput = (e) => {
- e.preventDefault();
- this.setState({
-   category: e.target.category.value,
-   radius: e.target.radius.value
- });
+  getUserInput = (e) => {
+   e.preventDefault();
+   this.setState({
+     category: e.target.category.value,
+     radius: e.target.radius.value
+   });
 
-    fetch(`http://localhost:8080/api/search/${e.target.category.value}/${e.target.radius.value}/${this.state.latitude}/${this.state.longitude}`, {
+    fetch(`/api/search/${e.target.category.value}/${e.target.radius.value}/${this.state.latitude}/${this.state.longitude}`, {
       method: "POST",
       headers: {
         'Content-type': 'application/json'
       },
+      credentials: 'include',
       body: JSON.stringify({
         latitude: this.state.latitude,
         longitude: this.state.longitude,
@@ -97,49 +139,66 @@ getUserInput = (e) => {
       var latitude  = position.coords.latitude;
       var longitude = position.coords.longitude;
       this.setState({latitude: latitude, longitude: longitude});
-
-      // output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
-      console.log(longitude)
-      console.log(latitude)
     }
     function error() {
       output.innerHTML = "Unable to retrieve your location";
     }
-    // output.innerHTML = "<p>Locating…</p>";
     navigator.geolocation.getCurrentPosition(success, error);
   }
 
-// Login pop-up
- openModal() {
-      this.setState({ isModalOpen: true })
+// Login/registration pop-up
+    openRegistrationModal() {
+      this.setState({ isRegistrationModalOpen: true })
     }
 
-    closeModal() {
-      this.setState({ isModalOpen: false })
+    openLoginModal() {
+      this.setState({ isLoginModalOpen: true })
     }
+
+  closeRegistrationModal() {
+    this.setState({ isRegistrationModalOpen: false })
+  }
+
+  closeLoginModal() {
+    this.setState({ isLoginModalOpen: false })
+  }
 
   render() {
+    //console.log('currentUser', this.state.currentUser.email )
     return (
       <div className="Eat-Up">
+
+    {this.state.currentUser && <div>Logged in as {this.state.currentUser.email}</div>}
 
           <header className="App-header">
             <h1 className="App-title">Eat-up</h1>
 
               <div>
-                <button onClick={() => this.openModal()}>Registration</button>
-                <Modal isOpen={this.state.isModalOpen} onClose={() => this.closeModal()}>
-                  <Registration getRegistration = {(e)=>this.getRegistration(e)}/>
-                  <p><button onClick={() => this.closeModal()}>Close</button></p>
+                <button onClick={() => this.openRegistrationModal()}>Registration</button>
+                <Modal isOpen={this.state.isRegistrationModalOpen} onClose={() => this.closeRegistrationModal()}>
+                <p style={{color: 'black'}}>Registration</p>
+                  <Registration getRegistration={(e)=>this.getRegistration(e)}/>
+                  <p><button onClick={() => this.closeRegistrationModal()}>Close</button></p>
+                </Modal>
+              </div>
+
+              <br></br>
+
+              <div>
+                <button onClick={() => this.openLoginModal()}>Login</button>
+                <Modal isOpen={this.state.isLoginModalOpen} onClose={() => this.closeLoginModal()}>
+                  <p style={{color: 'black'}}>Log in</p>
+                  <Login getLogin={(e)=>this.getLogin(e)}/>
+                   <p><button onClick={() => this.closeLoginModal()}>Close</button></p>
                 </Modal>
               </div>
               <br></br>
               <div>
-                <button onClick={() => this.openModal()}>Login</button>
-                <Modal isOpen={this.state.isModalOpen} onClose={() => this.closeModal()}>
-                </Modal>
+              <button onClick={(e)=>this.getLogout(e)}>Logout</button>
               </div>
+
           </header>
-          <div classname="Geo-finder">
+          <div className="Geo-finder">
             {this.geoFindMe()}
           </div>
 
@@ -159,3 +218,11 @@ getUserInput = (e) => {
 }
 
 export default App;
+
+// To do:
+// dont show login button if the user is signed in
+// Also if response is 403 use error messages for login/registration
+//commit/push this to github
+
+
+

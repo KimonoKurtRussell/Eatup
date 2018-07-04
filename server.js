@@ -2,21 +2,77 @@ const express = require('express');
 const yelp = require('yelp-fusion');
 const bodyParser = require('body-parser')
 const cors = require('cors')
+var cookieSession = require('cookie-session')
 const client = yelp.client("hxp7yqGWKyaIvgLRT0d4946GZRAKUxCTJy3mHGG0Es-UpLfc71F-BAWXWwFOLipfLZTPIUf3qw3cB8HXndgyok_pkQhW19SUaU0d72IDXrzqtOJRd1UMpfn4byg1W3Yx");
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json())
 
+app.use(cookieSession({
+  name: "session",
+  keys: ["dgs"] //secret key
+}));
+
+//temporary users database
+const users = [];
+
 const port = process.env.PORT || 8080;
 
-app.post('/users/:username/:email/:password', (req, res) => {
-  const username = req.params.username
-  const email = req.params.email
-  const password = req.params.password
-  console.log(username)
-  console.log(email)
-  console.log(password)
+//login route needs to be fixed/modified
+app.post('/users/login', (req, res) => {
+  if (req.body.email === "" || req.body.password === "" || req.body.username === "") {
+    res.status(403).send("Error: Email or Password is empty")
+  } else {
+    for (i in users){
+      if (req.body.email === users[i].email) {
+        req.session.username = users[i].username;
+        res.status(200).send(JSON.stringify(users[i]));
+        return;
+      }
+    }
+    res.status(403).send("Error: Email or Password is incorrect")
+  }
+
+});
+
+app.post("/users/logout", (req, res) => {
+
+  console.log('logging out on server');
+  req.session = null;
+  res.redirect("/");
+
+});
+
+app.post('/users/register', (req, res) => {
+  const username = req.body.username;
+  const email = req.body.email;
+  const password = req.body.password;
+
+    if (req.body.email === "" || req.body.password === ""){
+      return res.status(400).send("Error: Email or Password Field is Empty")
+    } else {
+      for (var i in users){
+        if (req.body.email === users[i].email){
+        return res.status(400).send("Error: That email already exists. Please Try again!")
+        }
+      }
+    }
+    //adding to temporary database
+    const currentUser = {
+      username : username,
+      email : email,
+      password: password
+    };
+
+    users.push(currentUser);
+    req.session.username = username;
+    res.status(200).send(JSON.stringify(currentUser));
+
+    console.log('users array:', users)
+    console.log(username)
+    console.log(email)
+    console.log(password)
 });
 
 app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
@@ -62,3 +118,4 @@ app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
     });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+//changed the register/login routes

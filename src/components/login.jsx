@@ -1,10 +1,10 @@
 import React from 'react';
 
-class Registration extends React.Component {
+class Login extends React.Component {
 render() {
   return (
     <div>
-      <form onSubmit={(e) => this.props.getRegistration(e)} >
+      <form onSubmit={(e) => this.props.getLogin(e)} >
         <input type='text' name='username' placeholder='username' value={this.props.username}/><br></br>
         <input type='text' name='email' placeholder='email' value={this.props.email}/><br></br>
         <input type='password' name='password' placeholder='password' value={this.props.password}/><br></br>
@@ -16,4 +16,4 @@ render() {
  }
 };
 
-export default Registration;
+export default Login;
