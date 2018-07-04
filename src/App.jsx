@@ -3,8 +3,14 @@ import React, { Component } from 'react';
 import './App.css';
 import Form from './components/form'
 import Modal from './components/modal'
+
+import Event from './components/event_form'
+import ToggleButton from './components/event_button'
 import Registration from './components/registration'
 import Swipes from './components/swipes.jsx'
+import EventList from './components/event_list'
+import EventCurrent from './components/event_current'
+
 
 class App extends Component {
 constructor(props) {
@@ -20,6 +26,14 @@ constructor(props) {
       email: '',
       password: '',
       users: [],
+      create: false,
+     events: [],
+     currentEventUser:[],
+     eventRestaurant: 0,
+     eventName: '',
+     description: '',
+     start: 0,
+     end: 0,
   };
 }
 
@@ -55,6 +69,43 @@ getRegistration(e) {
   componentDidMount() {
 
   }
+
+  getEventInput(e){
+     e.preventDefault();
+     console.log(e.target.eventName.value)
+     console.log(e.target.description.value)
+     console.log(e.target.restaurantName.value)
+     this.setState({
+       eventName: e.target.eventName.value,
+       restaurantName: e.target.restaurantName.value,
+       description: e.target.description.value,
+       start: e.target.start.value,
+       end: e.target.end.value,
+     })
+
+   fetch(`http://localhost:8080/events/${e.target.eventName.value}/${e.target.restaurantName.value}/${e.target.description.value}/${e.target.start.value}/${e.target.end.value}` , {
+     method: "POST" ,
+     // credentials: "include",
+     headers: {
+       'Content-type': 'application/json'
+     },
+     body: JSON.stringify({
+         eventName: e.target.eventName.value,
+         restaurantName: e.target.restaurantName.value,
+         description: e.target.description.value,
+         start: e.target.start.value,
+         end: e.target.end.value,
+          })
+     })
+      .then(res => res.json())
+     .then(data => {
+       this.setState({ events: data})
+
+     })
+     .catch(err => console.log(err))
+   };
+
+
 
 // Set preferences for Eat-up search
 getUserInput = (e) => {
@@ -116,6 +167,14 @@ getUserInput = (e) => {
       this.setState({ isModalOpen: false })
     }
 
+    handleEventClick = () => {
+   console.log('clicked')
+   this.setState({
+     create: true,
+
+   })
+ }
+
   render() {
     return (
       <div className="Eat-Up">
@@ -141,15 +200,29 @@ getUserInput = (e) => {
             {this.geoFindMe()}
           </div>
 
+          <div className="eventList">
+         <EventList/>
+         </div>
+
         <div>
-          <Form getUserInput = {this.getUserInput}/>
+          {!this.state.category && <Form getUserInput = {this.getUserInput}/>}
         </div>
 
-      <div id="out"></div>
+        <div>
+         {this.state.create && <Event getEventInput = {(e) => this.getEventInput(e)}/>}
+       </div>
+
+       <div>
+        {this.state.eventName && <EventCurrent/>}
+       </div>
 
       <div>
-        <Swipes data = {this.state.data} />
+        {!this.state.create && <Swipes data = {this.state.data} />}
     </div>
+
+    <div className="ToggleButton">
+     {this.state.category&&<ToggleButton create={this.state.create} eventRestaurant={this.state.eventRestaurant} handleClick={this.handleEventClick}/>}
+     </div>
 
     </div>
   );
