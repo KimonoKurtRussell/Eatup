@@ -10,13 +10,9 @@ constructor(props){
 
 }
 
-loggedState(e) {
- console.log(e)
-}
-
 render (){
   return(
-   <SwipeableViews enableMouseEvents onChangeIndex={this.loggedState}>
+   <SwipeableViews enableMouseEvents onChangeIndex={this.props.getEventRestaurant}>
 
     {this.props.data.map((restaurant, i) => (
       <div>
@@ -26,7 +22,6 @@ render (){
         <h5>Price: {restaurant.money}</h5>
         <h5>Rating: {restaurant.rating}</h5>
         <img className="photo" src={restaurant.image} alt={restaurant.name}/>
-
       </div>
 
     ))}

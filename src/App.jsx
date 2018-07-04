@@ -27,13 +27,13 @@ constructor(props) {
       password: '',
       users: [],
       create: false,
-     events: [],
-     currentEventUser:[],
-     eventRestaurant: 0,
-     eventName: '',
-     description: '',
-     start: 0,
-     end: 0,
+      events: [],
+      currentEventUser:[],
+      eventRestaurant: null,
+      eventName: '',
+      description: '',
+      start: 0,
+      end: 0,
   };
 }
 
@@ -131,7 +131,7 @@ getUserInput = (e) => {
     })
     .then(res => res.json())
     .then(data => {
-      this.setState({ data: data})
+      this.setState({ data: data, eventRestaurant: data[0]})
       console.log(data)
     })
     .catch(err => console.log(err))
@@ -173,7 +173,13 @@ getUserInput = (e) => {
    console.log('clicked')
    this.setState({
      create: true,
+   })
+ }
 
+ handleGetSwipeIndex = (n) => {
+   console.log('event clicked', n)
+   this.setState({
+     eventRestaurant:this.state.data[n]
    })
  }
 
@@ -211,7 +217,7 @@ getUserInput = (e) => {
         </div>
 
         <div>
-         {this.state.create && <Event getEventInput = {(e) => this.getEventInput(e)}/>}
+         {this.state.create && <Event getEventInput = {(e) => this.getEventInput(e)} restaurant = {this.state.eventRestaurant}/>}
        </div>
 
        <div>
@@ -219,11 +225,11 @@ getUserInput = (e) => {
        </div>
 
       <div>
-        {!this.state.create && <Swipes data = {this.state.data} />}
+        {!this.state.create && <Swipes data = {this.state.data} getEventRestaurant = {this.handleGetSwipeIndex} />}
     </div>
 
     <div className="ToggleButton">
-     {this.state.category&&<ToggleButton create={this.state.create} eventRestaurant={this.state.eventRestaurant} handleClick={this.handleEventClick}/>}
+     {this.state.category&&<ToggleButton create={this.state.create} handleClick={this.handleEventClick}/>}
      </div>
 
     </div>
