@@ -38,7 +38,7 @@ app.post('/users/login', (req, res) => {
     }).then(function(data){
       console.log('found user', data)
       //below?? not defined
-      //req.session.user_id = id;
+      req.session.user_id = data.id;
       const currentUser = {
         username : username,
         email : email,
