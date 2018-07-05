@@ -1,6 +1,7 @@
 const express = require('express');
 const yelp = require('yelp-fusion');
 const bodyParser = require('body-parser')
+const SocketServer = require('ws').Server
 const cors = require('cors')
 const client = yelp.client("hxp7yqGWKyaIvgLRT0d4946GZRAKUxCTJy3mHGG0Es-UpLfc71F-BAWXWwFOLipfLZTPIUf3qw3cB8HXndgyok_pkQhW19SUaU0d72IDXrzqtOJRd1UMpfn4byg1W3Yx");
 const app = express();
@@ -64,6 +65,16 @@ app.post('/events/:eventName/:restaurantName/:restaurantAddress/:description/:st
  });
 });
 
+app.get('/cards', (req, res) => {
+  knex.select("*")
+  .from("events")
+  .where("id", "=", "1")
+  .then(results => {
+    console.log(results)
+    res.json({results: results})
+  })
+});
+
 app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
   const category = req.params.category
   const radius = req.params.radius
@@ -105,5 +116,38 @@ app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
       });
 
     });
+
+// WEB SOCKETS
+const wss = new SocketServer({ port: 3001 });
+
+wss.on('connection', (ws) => {
+ console.log('Client connected');
+ users = {
+   type: "userCount",
+   userCount: wss.clients.size
+ };
+ console.log(users)
+ wss.clients.forEach(client => {
+   client.send(JSON.stringify(users));
+ });
+
+ wss.clients.forEach(client => {
+     client.send(JSON.stringify(wss.clients.size));
+   })
+ // Set up a callback for when a client closes the socket. This usually means they closed their browser.
+ ws.on('close', () => console.log('Client disconnected'));
+ users = {
+      type: "userCount",
+      userCount: wss.clients.size
+    };
+    wss.clients.forEach(client => {
+     client.send(JSON.stringify(users));
+    });
+});
+
+wss.on('connection', function connection(ws, req) {
+ const ip = req.connection.remoteAddress;
+ console.log(ip)
+});
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

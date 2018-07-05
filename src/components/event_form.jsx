@@ -28,7 +28,7 @@ constructor(props) {
 
    return (
      <div>
-      <form onSubmit={this.props.getEventInput} >
+      <form onSubmit={this.props.getEventInput}>
       <input type='text' name= 'restaurantName' placeholder="{this.props.restaurant.name}" value={this.props.restaurant.name}/>
       <input type='text' name= 'restaurantAddress' placeholder="{this.props.restaurant.address}" value={this.props.restaurant.address}/>
       <input type='text' name= 'eventName' placeholder='Event Name' value={this.props.eventName}/>
@@ -41,6 +41,7 @@ constructor(props) {
       <input type='text' name= 'description' placeholder='Event Description ' value={this.props.description}/>
       <button>Create Event</button>
      </form>
+     <button onClick={this.props.triggerEvent}>Retrieve data</button>
      </div>
 
    )

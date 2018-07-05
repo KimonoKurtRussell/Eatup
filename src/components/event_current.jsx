@@ -10,22 +10,11 @@ class EventCurrent extends React.Component {
 render() {
 
  return (
-
    <div>
-   <h5>{this.props.eventName}</h5>
-   <h5>Restaurant</h5>
-   <h5>{this.props.description}</h5>
-   <h5>{this.props.start} to {this.props.end}</h5>
-   <ul>
-   <li>Nolan</li>
-   </ul>
-  <button>Leave Event</button>
+   <p>{this.props.event_data}</p>
    </div>
-
    )
  }
 }
 
-
-
-export default EventCurrent
+export default EventCurrent;

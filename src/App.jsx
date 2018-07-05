@@ -34,11 +34,11 @@ constructor(props) {
       description: '',
       start: 0,
       end: 0,
+      event_data: [],
   };
 }
 
 getRegistration(e) {
-  console.log(e.target.username.value)
   e.preventDefault();
   this.setState({
     username: e.target.username.value,
@@ -70,11 +70,20 @@ getRegistration(e) {
 
   }
 
-  getEventInput(e){
+  triggerEvent = (e) => {
+  e.preventDefault();
+  console.log("FETCHED SUCCESSFULLY")
+  fetch(`/cards`)
+   .then(data => data.json() )
+   .then(results =>{
+     console.log(results)
+    this.setState({ event_data: results })
+   })
+ }
+
+
+  getEventInput(e) {
      e.preventDefault();
-     console.log(e.target.eventName.value)
-     console.log(e.target.description.value)
-     console.log(e.target.restaurantName.value)
      this.setState({
        eventName: e.target.eventName.value,
        restaurantName: e.target.restaurantName.value,
@@ -97,17 +106,14 @@ getRegistration(e) {
          description: e.target.description.value,
          start: e.target.start.value,
          end: e.target.end.value,
-          })
+        })
      })
-      .then(res => res.json())
+     .then(res => res.json())
      .then(data => {
        this.setState({ events: data})
-
      })
      .catch(err => console.log(err))
    };
-
-
 
 // Set preferences for Eat-up search
 getUserInput = (e) => {
@@ -132,7 +138,6 @@ getUserInput = (e) => {
     .then(res => res.json())
     .then(data => {
       this.setState({ data: data, eventRestaurant: data[0]})
-      console.log(data)
     })
     .catch(err => console.log(err))
   };
@@ -170,14 +175,12 @@ getUserInput = (e) => {
     }
 
     handleEventClick = () => {
-   console.log('clicked')
    this.setState({
      create: true,
    })
  }
 
  handleGetSwipeIndex = (n) => {
-   console.log('event clicked', n)
    this.setState({
      eventRestaurant:this.state.data[n]
    })
@@ -217,11 +220,11 @@ getUserInput = (e) => {
         </div>
 
         <div>
-         {this.state.create && <Event getEventInput = {(e) => this.getEventInput(e)} restaurant = {this.state.eventRestaurant}/>}
+         {this.state.create && <Event getEventInput = {(e) => this.getEventInput(e)} restaurant = {this.state.eventRestaurant} triggerEvent = {this.triggerEvent}/>}
        </div>
 
        <div>
-        {this.state.eventName && <EventCurrent/>}
+        {this.state.eventName && <EventCurrent eventData = {this.state.event_data}/>}
        </div>
 
       <div>
