@@ -5,6 +5,8 @@ const cors = require('cors')
 var cookieSession = require('cookie-session')
 const client = yelp.client("hxp7yqGWKyaIvgLRT0d4946GZRAKUxCTJy3mHGG0Es-UpLfc71F-BAWXWwFOLipfLZTPIUf3qw3cB8HXndgyok_pkQhW19SUaU0d72IDXrzqtOJRd1UMpfn4byg1W3Yx");
 const app = express();
+const configuration = require('./knexfile.js')['development']
+const knex = require('knex')(configuration);
 
 app.use(cors());
 app.use(bodyParser.json())
@@ -14,65 +16,86 @@ app.use(cookieSession({
   keys: ["dgs"] //secret key
 }));
 
-//temporary users database
-const users = [];
 
 const port = process.env.PORT || 8080;
 
-//login route needs to be fixed/modified
 app.post('/users/login', (req, res) => {
+  const username = req.body.username;
+  const email = req.body.email;
+  const password = req.body.password;
+  console.log('username', req.body.username)
+  console.log('email', req.body.email)
+  console.log('pass', req.body.password)
+
   if (req.body.email === "" || req.body.password === "" || req.body.username === "") {
-    res.status(403).send("Error: Email or Password is empty")
+    return res.status(403).send("Error: Email or Password is empty")
   } else {
-    for (i in users){
-      if (req.body.email === users[i].email) {
-        req.session.username = users[i].username;
-        res.status(200).send(JSON.stringify(users[i]));
-        return;
-      }
-    }
+
+    return knex('users').where({
+      email: req.body.email,
+      password: req.body.password,
+      name: req.body.username
+    }).then(function(data){
+      console.log('found user', data)
+      //below?? not defined
+      //req.session.user_id = id;
+      const currentUser = {
+        username : username,
+        email : email,
+        password: password
+      };
+      return res.status(200).send(JSON.stringify(currentUser));
+    })
+
+
     res.status(403).send("Error: Email or Password is incorrect")
   }
 
 });
 
 app.post("/users/logout", (req, res) => {
-
   console.log('logging out on server');
   req.session = null;
   res.redirect("/");
-
 });
 
+
+//To connect to real database:
 app.post('/users/register', (req, res) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
 
-    if (req.body.email === "" || req.body.password === ""){
+  if (req.body.email === "" || req.body.password === ""){
       return res.status(400).send("Error: Email or Password Field is Empty")
     } else {
-      for (var i in users){
-        if (req.body.email === users[i].email){
-        return res.status(400).send("Error: That email already exists. Please Try again!")
-        }
-      }
-    }
-    //adding to temporary database
-    const currentUser = {
-      username : username,
-      email : email,
-      password: password
-    };
 
-    users.push(currentUser);
-    req.session.username = username;
-    res.status(200).send(JSON.stringify(currentUser));
+      knex('users')
+     .returning('id')
+     .insert([{
+       name: req.body.username,
+       email: req.body.email,
+       password: req.body.password
+     }])
+     .then(function(id) {
+       req.session.user_id = id;
+       const currentUser = {
+        username : username,
+        email : email,
+        password: password
+      };
+      res.status(200).send(JSON.stringify(currentUser));
 
-    console.log('users array:', users)
-    console.log(username)
-    console.log(email)
-    console.log(password)
+     })
+     .catch(function(error) {
+
+      //need to fix this later to send right error message
+      //res.status(400).send("Error: That email/username already exists. Please Try again!")
+
+       console.error('Error:', error);
+     });
+  }
+
 });
 
 app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
@@ -118,4 +141,8 @@ app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
     });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
-//changed the register/login routes
+
+//login/logout/register func w/db
+//sessions working properly
+//
+

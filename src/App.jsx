@@ -61,9 +61,9 @@ class App extends Component {
     .then(res => res.json())
     .then(data => {
       this.setState({ currentUser: data})
-      console.log('App.jsx current user', data)
+      console.log('App.jsx: logged in current user', data)
     })
-    .catch(err => console.log(err))
+    .catch(err => console.log("$$$$$$$Error:", err))
 
   };
 
@@ -89,9 +89,10 @@ class App extends Component {
     .then(res => res.json())
     .then(data => {
       this.setState({ currentUser: data})
-      console.log('App.jsx current user', data)
+      console.log('App.jsx: registered current user', data)
     })
-    .catch(err => console.log(err))
+    .catch(err =>
+      console.log(err))
   };
 
 
@@ -222,7 +223,7 @@ export default App;
 // To do:
 // dont show login button if the user is signed in
 // Also if response is 403 use error messages for login/registration
-//commit/push this to github
+//connect the userauth code to the database
 
 
 
