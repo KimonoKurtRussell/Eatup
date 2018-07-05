@@ -5,10 +5,10 @@ import SwipeableViews from 'react-swipeable-views';
 
 class Swipes extends React.Component {
 
-constructor(props){
- super(props);
+  constructor(props){
+   super(props);
 
-}
+  }
 
 render (){
  return(

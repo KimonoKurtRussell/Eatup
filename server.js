@@ -136,7 +136,7 @@ const restaurantName = req.params.restaurantName
 const description = req.params.description
 const start = req.params.start
 const end = req.params.end
-knex('events')
+const id = knex('events')
 .returning('id')
 .insert([{
   event_name: req.params.eventName,
@@ -145,13 +145,21 @@ knex('events')
   description: req.params.description,
   event_start: req.params.start,
   event_end: req.params.end
-}])
-.then(function() {
-  console.log("worked")
-})
-.catch(function(error) {
-  console.error("Error:",error);
+}]).then((data) => {
+    knex.select('*')
+   .from('events')
+   .where('id', '=', data[0])
+   .then(results => {
+     console.log(results)
+     res.json(results)
+   })
+
+  console.log('DATA', data);
 });
+
+// .catch(function(error) {
+//   console.error("Error:",error);
+// });
 });
 
 app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {

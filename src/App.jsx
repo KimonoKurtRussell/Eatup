@@ -10,6 +10,7 @@ import EventList from './components/event_list'
 import EventCurrent from './components/event_current'
 import Event from './components/event_form'
 
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -27,7 +28,7 @@ class App extends Component {
         currentUser: null,
         users: [],
         create: false,
-        events: [],
+        events: null,
         eventRestaurant: null,
         eventName: '',
         description: '',
@@ -76,7 +77,7 @@ class App extends Component {
       this.setState({ currentUser: data})
       console.log('App.jsx: logged in current user', data)
     })
-    .catch(err => console.log("$$$$$$$Error:", err))
+    .catch(err => console.log("$$MyError:", err))
 
   };
 
@@ -128,6 +129,7 @@ class App extends Component {
       restaurantAddress: e.target.restaurantAddress.value
     })
 
+
   fetch(`http://localhost:8080/events/${e.target.eventName.value}/${e.target.restaurantName.value}/${e.target.restaurantAddress.value}/${e.target.description.value}/${e.target.start.value}/${e.target.end.value}` , {
     method: "POST" ,
     // credentials: "include",
@@ -145,7 +147,8 @@ class App extends Component {
     })
      .then(res => res.json())
     .then(data => {
-      this.setState({ events: data})
+      this.setState({ events: data[0]})
+      console.log('events back from server', this.state.events)
 
     })
     .catch(err => console.log(err))
@@ -156,7 +159,7 @@ class App extends Component {
    e.preventDefault();
    this.setState({
      category: e.target.category.value,
-     radius: e.target.radius.value
+     radius: e.target.radius.value,
    });
 
     fetch(`/api/search/${e.target.category.value}/${e.target.radius.value}/${this.state.latitude}/${this.state.longitude}`, {
@@ -174,11 +177,13 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(data => {
-      this.setState({ data: data})
+      this.setState({ data: data, eventRestaurant: data[0]})
       console.log(data)
     })
     .catch(err => console.log(err))
   };
+
+
 
   // Set local browsers geo-cordinates
   geoFindMe() {
@@ -222,12 +227,13 @@ class App extends Component {
     })
   }
 
-handleGetSwipeIndex = (n) => {
-  console.log('event clicked', n)
-  this.setState({
-    eventRestaurant:this.state.data[n]
-  })
-}
+  handleGetSwipeIndex = (n) => {
+    console.log('event clicked', n)
+    this.setState({
+      eventRestaurant:this.state.data[n]
+    })
+  }
+
 
   render() {
     //console.log('currentUser', this.state.currentUser.email )
@@ -268,10 +274,10 @@ handleGetSwipeIndex = (n) => {
             {this.geoFindMe()}
           </div>
 
-        <div className="eventList">
-        <EventList/>
-        </div>
 
+          <div className="eventList">
+            <EventList/>
+          </div>
 
 
        <div>
@@ -283,7 +289,7 @@ handleGetSwipeIndex = (n) => {
       </div>
 
       <div>
-       {this.state.eventName && <EventCurrent/>}
+       {this.state.eventName && this.state.currentUser && this.state.events && <EventCurrent events={this.state.events} currentUser={this.state.currentUser.username} />}
       </div>
 
      <div>
@@ -304,7 +310,6 @@ export default App;
 // To do:
 // dont show login button if the user is signed in
 // Also if response is 403 use error messages for login/registration
-//connect the userauth code to the database
 
 
 
