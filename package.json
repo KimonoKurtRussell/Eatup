@@ -13,6 +13,7 @@
     "react-dom": "^16.4.1",
     "react-scripts": "1.1.4",
     "react-swipeable-views": "^0.12.14",
+    "ws": "^5.2.1",
     "yelp-fusion": "^2.0.3"
   },
   "devDependencies": {

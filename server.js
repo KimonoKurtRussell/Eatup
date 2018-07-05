@@ -7,6 +7,7 @@ const client = yelp.client("hxp7yqGWKyaIvgLRT0d4946GZRAKUxCTJy3mHGG0Es-UpLfc71F-
 const app = express();
 const configuration = require('./knexfile.js')['development']
 const knex = require('knex')(configuration);
+const SocketServer = require('ws').Server;
 
 app.use(cors());
 app.use(bodyParser.json())
@@ -16,6 +17,37 @@ app.use(cookieSession({
   keys: ["dgs"] //secret key
 }));
 
+const wss = new SocketServer({ port: 3001 });
+
+wss.on('connection', (ws) => {
+ console.log('Client connected');
+ users = {
+   type: "userCount",
+   userCount: wss.clients.size
+ };
+ console.log(users)
+ wss.clients.forEach(client => {
+   client.send(JSON.stringify(users));
+ });
+
+ wss.clients.forEach(client => {
+     client.send(JSON.stringify(wss.clients.size));
+   })
+ // Set up a callback for when a client closes the socket. This usually means they closed their browser.
+ ws.on('close', () => console.log('Client disconnected'));
+ users = {
+      type: "userCount",
+      userCount: wss.clients.size
+    };
+    wss.clients.forEach(client => {
+     client.send(JSON.stringify(users));
+    });
+});
+
+wss.on('connection', function connection(ws, req) {
+ const ip = req.connection.remoteAddress;
+ console.log(ip)
+});
 
 const port = process.env.PORT || 8080;
 
@@ -37,7 +69,6 @@ app.post('/users/login', (req, res) => {
       name: req.body.username
     }).then(function(data){
       console.log('found user', data)
-      //below?? not defined
       req.session.user_id = data.id;
       const currentUser = {
         username : username,
@@ -142,7 +173,4 @@ app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
-//login/logout/register func w/db
-//sessions working properly
-//
 
