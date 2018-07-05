@@ -5,6 +5,10 @@ import Modal from './components/modal'
 import Registration from './components/registration'
 import Swipes from './components/swipes.jsx'
 import Login from './components/login.jsx'
+import ToggleButton from './components/event_button'
+import EventList from './components/event_list'
+import EventCurrent from './components/event_current'
+import Event from './components/event_form'
 
 class App extends Component {
   constructor(props) {
@@ -21,6 +25,15 @@ class App extends Component {
         email: '',
         password: '',
         currentUser: null,
+        users: [],
+        create: false,
+        events: [],
+        eventRestaurant: null,
+        eventName: '',
+        description: '',
+        start: 0,
+        end: 0,
+        activeUsers: 1
     };
   }
 
@@ -100,6 +113,44 @@ class App extends Component {
 
   }
 
+//for event input
+  getEventInput(e){
+    e.preventDefault();
+    console.log(e.target.eventName.value)
+    console.log(e.target.description.value)
+    console.log(e.target.restaurantName.value)
+    this.setState({
+      eventName: e.target.eventName.value,
+      restaurantName: e.target.restaurantName.value,
+      description: e.target.description.value,
+      start: e.target.start.value,
+      end: e.target.end.value,
+      restaurantAddress: e.target.restaurantAddress.value
+    })
+
+  fetch(`http://localhost:8080/events/${e.target.eventName.value}/${e.target.restaurantName.value}/${e.target.restaurantAddress.value}/${e.target.description.value}/${e.target.start.value}/${e.target.end.value}` , {
+    method: "POST" ,
+    // credentials: "include",
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({
+        eventName: e.target.eventName.value,
+        restaurantName: e.target.restaurantName.value,
+        restaurantAddress: e.target.restaurantAddress.value,
+        description: e.target.description.value,
+        start: e.target.start.value,
+        end: e.target.end.value,
+         })
+    })
+     .then(res => res.json())
+    .then(data => {
+      this.setState({ events: data})
+
+    })
+    .catch(err => console.log(err))
+  };
+
 // Set preferences for Eat-up search
   getUserInput = (e) => {
    e.preventDefault();
@@ -164,6 +215,20 @@ class App extends Component {
     this.setState({ isLoginModalOpen: false })
   }
 
+  handleEventClick = () => {
+    console.log('clicked')
+    this.setState({
+      create: true,
+    })
+  }
+
+handleGetSwipeIndex = (n) => {
+  console.log('event clicked', n)
+  this.setState({
+    eventRestaurant:this.state.data[n]
+  })
+}
+
   render() {
     //console.log('currentUser', this.state.currentUser.email )
     return (
@@ -203,18 +268,34 @@ class App extends Component {
             {this.geoFindMe()}
           </div>
 
-        <div>
-          <Form getUserInput = {this.getUserInput}/>
+        <div className="eventList">
+        <EventList/>
         </div>
 
-      <div id="out"></div>
+
+
+       <div>
+         {!this.state.category && <Form getUserInput = {this.getUserInput}/>}
+       </div>
+
+       <div>
+        {this.state.create && <Event getEventInput = {(e) => this.getEventInput(e)} restaurant = {this.state.eventRestaurant}/>}
+      </div>
 
       <div>
-        <Swipes data = {this.state.data} />
+       {this.state.eventName && <EventCurrent/>}
+      </div>
+
+     <div>
+       {!this.state.create && <Swipes data = {this.state.data} getEventRestaurant = {this.handleGetSwipeIndex} />}
+   </div>
+
+   <div className="ToggleButton">
+    {this.state.category&&<ToggleButton create={this.state.create} handleClick={this.handleEventClick}/>}
     </div>
 
-    </div>
-  );
+   </div>
+ );
 }
 }
 
