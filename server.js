@@ -46,10 +46,22 @@ wss.on('connection', (ws) => {
 
 wss.on('connection', function connection(ws, req) {
  const ip = req.connection.remoteAddress;
- console.log(ip)
+ console.log('ip address', ip)
 });
 
 const port = process.env.PORT || 8080;
+
+
+//returns all the current events in the db
+app.get('/events', (req, res) => {
+  knex.select("*")
+  .from("events")
+  .then(eventList => {
+    console.log(eventList)
+     res.json(eventList)
+   })
+});
+
 
 app.post('/users/login', (req, res) => {
   const username = req.body.username;
@@ -154,7 +166,6 @@ const id = knex('events')
      res.json(results)
    })
 
-  console.log('DATA', data);
 });
 
 // .catch(function(error) {
@@ -167,18 +178,15 @@ app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
   const radius = req.params.radius
   const latitude = req.params.latitude
   const longitude = req.params.longitude
-  console.log(latitude)
-  console.log(longitude)
   client.search({
     latitude: latitude,
     longitude: longitude,
     categories: category,
     radius: radius
   }).then(response => {
- // console.log(response.jsonBody.businesses)
 
  const businesses = response.jsonBody.businesses
-     console.log(businesses)
+     //console.log(businesses)
      const restaurantData = [];
 
      businesses.map(business => {

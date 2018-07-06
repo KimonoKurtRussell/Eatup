@@ -34,8 +34,23 @@ class App extends Component {
         description: '',
         start: 0,
         end: 0,
-        activeUsers: 1
+        activeUsers: 1,
+        dbEventList: []
     };
+  }
+
+   componentDidMount() {
+
+    console.log("going to display all events in db")
+    fetch(`/events`, {
+      method: "GET",
+    })
+    .then(res => res.json())
+    .then(data => {
+      this.setState({ dbEventList: data})
+      console.log('Event list from db', data)
+    })
+    .catch(err => console.log("MyError:", err))
   }
 
 
@@ -110,9 +125,7 @@ class App extends Component {
   };
 
 
-  componentDidMount() {
 
-  }
 
 //for event input
   getEventInput(e){
@@ -276,10 +289,10 @@ class App extends Component {
 
 
           <div className="eventList">
-            <EventList/>
+            <EventList dbEventList={this.state.dbEventList}/>
           </div>
 
-
+          <br></br>
        <div>
          {!this.state.category && <Form getUserInput = {this.getUserInput}/>}
        </div>
