@@ -10,7 +10,6 @@ import EventList from './components/event_list'
 import EventCurrent from './components/event_current'
 import Event from './components/event_form'
 
-
 class App extends Component {
   constructor(props) {
     super(props)
@@ -51,6 +50,23 @@ class App extends Component {
       console.log('Event list from db', data)
     })
     .catch(err => console.log("MyError:", err))
+  }
+
+  joinEvent = (idx) => {
+    const obj = {
+      events_id: idx,
+      users_id: this.state.currentUser.id}
+      console.log(this.state.currentUser, 'users')
+   fetch(`/joinEvent`,
+   {
+    method: "POST",
+    headers: {
+       'Content-type': 'application/json'
+     },
+    body: JSON.stringify(obj)
+  })
+   .then(res => res.json())
+
   }
 
 
@@ -289,7 +305,7 @@ class App extends Component {
 
 
           <div className="eventList">
-            <EventList dbEventList={this.state.dbEventList}/>
+            <EventList joinEvent={this.joinEvent} dbEventList={this.state.dbEventList}/>
           </div>
 
           <br></br>

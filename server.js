@@ -62,6 +62,25 @@ app.get('/events', (req, res) => {
    })
 });
 
+//route to insert users into events
+app.post('/joinEvent', (req, res) => {
+  console.log('inserting attendees', req.body)
+  knex('attendees')
+  .returning('id')
+  .insert([{
+    users_id: req.body.users_id,
+    events_id: req.body.events_id
+  }])
+  .then(results => {
+    res.json(results)}
+    )
+});
+
+//route to delete users from event
+// app.post('/leaveEvent', (req, res) => {
+
+// });
+
 
 app.post('/users/login', (req, res) => {
   const username = req.body.username;
@@ -80,9 +99,10 @@ app.post('/users/login', (req, res) => {
       password: req.body.password,
       name: req.body.username
     }).then(function(data){
-      console.log('found user', data)
-      req.session.user_id = data.id;
+      console.log('login id', data[0].id)
+      req.session.user_id = data[0].id;
       const currentUser = {
+        id: data[0].id,
         username : username,
         email : email,
         password: password
@@ -121,8 +141,10 @@ app.post('/users/register', (req, res) => {
        password: req.body.password
      }])
      .then(function(id) {
-       req.session.user_id = id;
+       req.session.user_id = id[0];
+       console.log('register id', id[0])
        const currentUser = {
+        id: id[0],
         username : username,
         email : email,
         password: password

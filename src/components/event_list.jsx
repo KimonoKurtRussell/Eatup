@@ -21,7 +21,7 @@ class EventList extends React.Component {
             <h5>{event.restaurant_address}</h5>
             <h6>{event.description}</h6>
             <h6>Start:{event.event_start} End:{event.event_end}</h6>
-            <button>Join Event</button>
+            <button onClick={()=> this.props.joinEvent(event.id)}>Join Event</button>
             <button>Leave Event</button>
            </div>
            )})
