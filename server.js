@@ -52,15 +52,47 @@ wss.on('connection', function connection(ws, req) {
 const port = process.env.PORT || 8080;
 
 
-//returns all the current events in the db
+
+
+
+//returns all the current events in the db - original
+// app.get('/events', (req, res) => {
+//   knex.select("*")
+//   .from("events")
+//   .then(eventList => {
+//     console.log(eventList)
+//      res.json(eventList)
+//    })
+
+// });
+
 app.get('/events', (req, res) => {
-  knex.select("*")
-  .from("events")
-  .then(eventList => {
-    console.log(eventList)
-     res.json(eventList)
-   })
+  knex.raw('SELECT * FROM events LEFT JOIN attendees ON events.id  = attendees.events_id LEFT JOIN users ON attendees.users_id = users.id;')
+  .then((data) => {
+    //console.log(data.rows)
+
+    var eventdata = data.rows.reduce(function(a, e) {
+      if (a[e.events_id]) {
+        a[e.events_id].names.push(e.name)
+      } else {
+        a[e.events_id] = {
+          names: [e.name],
+          event_name: e.event_name,
+          restaurant_name: e.restaurant_name,
+          restaurant_address: e.restaurant_address,
+          description: e.description,
+          event_start: e.event_start,
+          event_end: e.event_end
+        }
+      }
+     return a;
+    }, {})
+    res.json(eventdata);
+    console.log(eventdata);
+
+  })
 });
+
 
 //route to insert users into events
 app.post('/joinEvent', (req, res) => {

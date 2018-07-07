@@ -13,7 +13,7 @@ class EventList extends React.Component {
     return (
       <div>
       <h2>Current Events You Can Join!</h2>
-       { this.props.dbEventList.map((event, idx) => {
+       { Object.values(this.props.dbEventList).map((event, idx) => {
           return (
            <div key={idx}>
             <h3>{event.event_name}</h3>
@@ -21,6 +21,10 @@ class EventList extends React.Component {
             <h5>{event.restaurant_address}</h5>
             <h6>{event.description}</h6>
             <h6>Start:{event.event_start} End:{event.event_end}</h6>
+            <h6>People Going:</h6>
+            <h6>{event.names}</h6>
+
+
             <button onClick={()=> this.props.joinEvent(event.id)}>Join Event</button>
             <button>Leave Event</button>
            </div>
