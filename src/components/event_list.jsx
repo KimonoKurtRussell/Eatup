@@ -25,7 +25,7 @@ class EventList extends React.Component {
             <h6>{event.names}</h6>
 
 
-            <button onClick={()=> this.props.joinEvent(event.id)}>Join Event</button>
+            <button onClick={()=> this.props.joinEvent(event.event_id)}>Join Event</button>
             <button>Leave Event</button>
            </div>
            )})

@@ -50,7 +50,9 @@ class App extends Component {
       console.log('Event list from db', data)
     })
     .catch(err => console.log("MyError:", err))
+
   }
+
 
   joinEvent = (idx) => {
     const obj = {
@@ -66,6 +68,17 @@ class App extends Component {
     body: JSON.stringify(obj)
   })
    .then(res => res.json())
+
+
+    fetch(`/events`, {
+      method: "GET",
+    })
+    .then(res => res.json())
+    .then(data => {
+      this.setState({ dbEventList: data})
+      console.log('Event list from db', data)
+    })
+    .catch(err => console.log("MyError:", err))
 
   }
 

@@ -82,7 +82,8 @@ app.get('/events', (req, res) => {
           restaurant_address: e.restaurant_address,
           description: e.description,
           event_start: e.event_start,
-          event_end: e.event_end
+          event_end: e.event_end,
+          event_id: e.events_id
         }
       }
      return a;
