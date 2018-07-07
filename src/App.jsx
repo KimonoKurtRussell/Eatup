@@ -57,28 +57,29 @@ class App extends Component {
   joinEvent = (idx) => {
     const obj = {
       events_id: idx,
-      users_id: this.state.currentUser.id}
-      console.log(this.state.currentUser, 'users')
-   fetch(`/joinEvent`,
-   {
-    method: "POST",
-    headers: {
-       'Content-type': 'application/json'
-     },
-    body: JSON.stringify(obj)
-  })
-   .then(res => res.json())
+      users_id: this.state.currentUser.id
+    }
+    console.log(this.state.currentUser, 'users')
+
+    return fetch(`/joinEvent`, {
+      method: "POST",
+      headers: {
+         'Content-type': 'application/json'
+       },
+      body: JSON.stringify(obj)
+    })
+   // .then(res => res.json())
 
 
-    fetch(`/events`, {
-      method: "GET",
-    })
-    .then(res => res.json())
-    .then(data => {
-      this.setState({ dbEventList: data})
-      console.log('Event list from db', data)
-    })
-    .catch(err => console.log("MyError:", err))
+    // fetch(`/events`, {
+    //   method: "GET",
+    // })
+    // .then(res => res.json())
+    // .then(data => {
+    //   this.setState({ dbEventList: data})
+    //   console.log('Event list from db', data)
+    // })
+    // .catch(err => console.log("MyError:", err))
 
   }
 
@@ -331,7 +332,7 @@ class App extends Component {
       </div>
 
       <div>
-       {this.state.eventName && this.state.currentUser && this.state.events && <EventCurrent events={this.state.events} currentUser={this.state.currentUser.username} />}
+       {this.state.eventName && this.state.currentUser && this.state.events && <EventCurrent events={this.state.events} currentUser={this.state.currentUser.username} joinEvent={this.joinEvent} />}
       </div>
 
      <div>

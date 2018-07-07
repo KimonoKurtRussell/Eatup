@@ -1,14 +1,12 @@
 import React from 'react';
+import EventCard from './event_card.jsx'
 
 
 class EventList extends React.Component {
 
-  constructor(props){
-   super(props);
-  }
 
   render() {
-    console.log('event_listdata', this.props.dbEventList)
+    //console.log('event_listdata', this.props.dbEventList)
 
     return (
       <div>
@@ -16,17 +14,7 @@ class EventList extends React.Component {
        { Object.values(this.props.dbEventList).map((event, idx) => {
           return (
            <div key={idx}>
-            <h3>{event.event_name}</h3>
-            <h4>{event.restaurant_name}</h4>
-            <h5>{event.restaurant_address}</h5>
-            <h6>{event.description}</h6>
-            <h6>Start:{event.event_start} End:{event.event_end}</h6>
-            <h6>People Going:</h6>
-            <h6>{event.names}</h6>
-
-
-            <button onClick={()=> this.props.joinEvent(event.event_id)}>Join Event</button>
-            <button>Leave Event</button>
+            <EventCard eventInfo={event} joinEvent={this.props.joinEvent}/>
            </div>
            )})
         }

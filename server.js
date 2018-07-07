@@ -105,9 +105,17 @@ app.post('/joinEvent', (req, res) => {
     events_id: req.body.events_id
   }])
   .then(results => {
-    res.json(results)}
-    )
+    knex.raw(`select name from users join (select users_id from attendees where events_id = ${req.body.events_id}) as A on users.id = A.users_id`)
+    .then(data => {
+      console.log('eventid nameS:', data.rows)
+
+      res.json(['a', 'b', 'c'])
+
+    })
+
+  })
 });
+
 
 //route to delete users from event
 // app.post('/leaveEvent', (req, res) => {
