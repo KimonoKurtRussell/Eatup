@@ -107,9 +107,13 @@ app.post('/joinEvent', (req, res) => {
   .then(results => {
     knex.raw(`select name from users join (select users_id from attendees where events_id = ${req.body.events_id}) as A on users.id = A.users_id`)
     .then(data => {
+
       console.log('eventid nameS:', data.rows)
 
-      res.json(['a', 'b', 'c'])
+        var eventnames = data.rows.map(a => a.name)
+        console.log('EVENTNAMES', eventnames)
+
+      res.json(eventnames)
 
     })
 
