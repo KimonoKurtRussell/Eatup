@@ -1,39 +1,26 @@
 import React from 'react';
+import EventCard from './event_card.jsx'
 
 
 class EventList extends React.Component {
 
-constructor(props){
-  super(props);
 
+  render() {
+    //console.log('event_listdata', this.props.dbEventList)
+
+    return (
+      <div>
+      <h2>Current Events You Can Join!</h2>
+       { Object.values(this.props.dbEventList).map((event, idx) => {
+          return (
+           <div key={idx}>
+            <EventCard eventInfo={event} joinEvent={this.props.joinEvent}/>
+           </div>
+           )})
+        }
+      </div>
+    );
+  }
 }
 
-
-
-// <h5>{event.users.avatarphoto}</h5> to be used when avatar photos are implemented
-
-// {this.props.events.map((event, i) => (
-
-render() {
-
- return (
-
-   <div>
-   <h5>Nolan's 28th Birthday</h5>
-   <h5>Restaurant</h5>
-   <h5>An event to end all events</h5>
-   <h5>May 1st 12:00 to May 1st 12:01</h5>
-   <ul>
-   <li>Nolan</li>
-   </ul>
-  <button>Join Event</button>
-  <button>Leave Event</button>
-   </div>
-
-   )
- }
-}
-
-
-
-export default EventList
+export default EventList;

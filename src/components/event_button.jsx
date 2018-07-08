@@ -2,24 +2,24 @@ import React from 'react';
 
 class ToggleButton extends React.Component {
 
- constructor() {
-   super();
+constructor() {
+  super();
 
- }
+}
 
- render() {
-   const text = this.props.create ? 'Event Created' : 'Start Event';
+render() {
+  const text = this.props.create ? 'Event Created' : 'Start Event';
 
-   if (this.props.create) {
-     return null;
-   }
+  if (this.props.create) {
+    return null;
+  }
 
-   return (
-     <div onClick={this.props.handleClick}>
-       {text}
-     </div>
-   );
- }
+  return (
+    <div onClick={this.props.handleClick}>
+      {text}
+    </div>
+  );
+}
 }
 
 

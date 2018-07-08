@@ -41,7 +41,6 @@ constructor(props) {
       <input type='text' name= 'description' placeholder='Event Description ' value={this.props.description}/>
       <button>Create Event</button>
      </form>
-     <button onClick={this.props.triggerEvent}>Retrieve data</button>
      </div>
 
    )
