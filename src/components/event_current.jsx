@@ -21,8 +21,7 @@ class EventCurrent extends React.Component {
         <ul>
           <li>{this.props.currentUser}</li>
         </ul>
-          <button>Join Event</button>
-          <button>Leave Event</button>
+          <button onClick={() => this.props.joinEvent(this.props.events.id)}>CONFIRM</button>
       </div>
 
     )
