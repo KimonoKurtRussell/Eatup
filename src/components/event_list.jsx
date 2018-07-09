@@ -2,11 +2,12 @@ import React from 'react';
 import EventCard from './event_card.jsx'
 
 
+
+
 class EventList extends React.Component {
 
 
   render() {
-    //console.log('event_listdata', this.props.dbEventList)
 
     return (
       <div>

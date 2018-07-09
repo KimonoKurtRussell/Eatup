@@ -270,7 +270,6 @@ class App extends Component {
 
 
   render() {
-    //console.log('currentUser', this.state.currentUser.email )
     return (
       <div className="Eat-Up">
 
@@ -340,10 +339,6 @@ class App extends Component {
 }
 
 export default App;
-
-// To do:
-// dont show login button if the user is signed in
-// Also if response is 403 use error messages for login/registration
 
 
 

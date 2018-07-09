@@ -67,8 +67,10 @@ app.get('/events', (req, res) => {
           description: e.description,
           event_start: e.event_start,
           event_end: e.event_end,
-          event_id: e.events_id
+          event_id: e.events_id,
+
         }
+
       }
      return a;
     }, {})
