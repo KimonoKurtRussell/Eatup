@@ -1,5 +1,6 @@
 import React from 'react';
 import EventCard from './event_card.jsx'
+import Collapsible from 'react-collapsible';
 
 
 class EventList extends React.Component {
@@ -10,14 +11,13 @@ class EventList extends React.Component {
 
     return (
       <div>
-      <h2>Current Events You Can Join!</h2>
        { Object.values(this.props.dbEventList).map((event, idx) => {
           return (
-           <div key={idx}>
-            <EventCard eventInfo={event} joinEvent={this.props.joinEvent}/>
-           </div>
-           )})
-        }
+            <Collapsible className="eventCards" openedClassName="eventCardsOpen" transitionTime="250" transitionCloseTime="5"  trigger={<h1>{event.event_name}</h1>} key={idx}>
+           <EventCard eventInfo={event} joinEvent={this.props.joinEvent} currentUser = {this.props.currentUser}/>
+          </Collapsible>
+        )})
+      }
       </div>
     );
   }

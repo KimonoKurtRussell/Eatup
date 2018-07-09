@@ -48,7 +48,7 @@ wss.on('connection', (ws) => {
 
 wss.on('connection', function connection(ws, req) {
   const ip = req.connection.remoteAddress;
-  console.log('ip address', ip)
+  // console.log('ip address', ip)
 });
 
 const port = process.env.PORT || 8080;
@@ -86,42 +86,42 @@ app.get('/events', (req, res) => {
       return a;
     }, {})
     res.json(eventdata);
-    console.log(eventdata);
+    // console.log(eventdata);
 
   })
 });
 
 //route to insert users into events
 app.post('/joinEvent', (req, res) => {
-  console.log('inserting attendees', req.body)
+  // console.log('inserting attendees', req.body)
   knex('attendees').returning('id').insert([{
     users_id: req.body.users_id,
     events_id: req.body.events_id
   }]).then(results => {
     knex.raw(`select name from users join (select users_id from attendees where events_id = ${req.body.events_id}) as A on users.id = A.users_id`).then(data => {
 
-      console.log('eventid nameS:', data.rows)
+      // console.log('eventid nameS:', data.rows)
 
       var eventnames = data.rows.map(a => a.name)
-      console.log('EVENTNAMES', eventnames)
-
       res.json(eventnames)
-
     })
-
   })
 });
+
+// app.post('/leaveEvent', (req, res) => {
+//   // Need to get user ID in here
+//   console.log("Leave event Quitter Names: " + req.body.names)
+//   console.log("Quitter user ids: " + req.body.currentUser)
+// });
+
 
 app.post('/users/login', (req, res) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
-  console.log('username', req.body.username)
-  console.log('email', req.body.email)
-  console.log('pass', req.body.password)
 
   if (req.body.email === "" || req.body.password === "" || req.body.username === "") {
-    return res.status(403).send("Error: Email or Password is empty")
+    return res.alert("Error: Email or Password is empty")
   } else {
 
     return knex('users').where({
@@ -129,7 +129,7 @@ app.post('/users/login', (req, res) => {
       password: req.body.password,
       name: req.body.username
     }).then(function(data) {
-      console.log('login id', data[0].id)
+      // console.log('login id', data[0].id)
       req.session.user_id = data[0].id;
       const currentUser = {
         id: data[0].id,
@@ -140,13 +140,13 @@ app.post('/users/login', (req, res) => {
       return res.status(200).send(JSON.stringify(currentUser));
     })
 
-    res.status(403).send("Error: Email or Password is incorrect")
+    res.alert("Error: Email or Password is incorrect")
   }
 
 });
 
 app.post("/users/logout", (req, res) => {
-  console.log('logging out on server');
+  // console.log('logging out on server');
   req.session = null;
   res.redirect("/");
 });
@@ -167,7 +167,7 @@ app.post('/users/register', (req, res) => {
       password: req.body.password
     }]).then(function(id) {
       req.session.user_id = id[0];
-      console.log('register id', id[0])
+      // console.log('register id', id[0])
       const currentUser = {
         id: id[0],
         username: username,
@@ -203,14 +203,10 @@ app.post('/events/:eventName/:restaurantName/:restaurantAddress/:description/:st
     event_end: req.params.end
   }]).then((data) => {
     knex.select('*').from('events').where('id', '=', data[0]).then(results => {
-      console.log(results)
+      // console.log(results)
       res.json(results)
     })
   });
-
-  // .catch(function(error) {
-  //   console.error("Error:",error);
-  // });
 });
 
 app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {

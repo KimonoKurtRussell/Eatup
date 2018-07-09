@@ -8,8 +8,8 @@ class Modal extends React.Component {
 
       let modalStyle = {
         position: 'absolute',
-        top: '50%',
-        left: '50%',
+        top: '500%',
+        left: '58%',
         transform: 'translate(-50%, -50%)',
         zIndex: '9999',
         background: '#fff'

@@ -10,6 +10,9 @@ import EventList from './components/event_list'
 import EventCurrent from './components/event_current'
 import Event from './components/event_form'
 
+import SideNav1 from './images/sidenav1.jpg'
+import MainNav from './images/mainnav.jpeg'
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -25,6 +28,7 @@ class App extends Component {
         email: '',
         password: '',
         currentUser: null,
+        loggedin: false,
         users: [],
         create: false,
         events: null,
@@ -39,7 +43,16 @@ class App extends Component {
   }
 
    componentDidMount() {
+     this.List();
+  }
 
+  componentWillMount() {
+    clearInterval(this.puller)
+  }
+
+  // HELPER FUNCTION TO MAKE CONSTANT CALLS
+
+    List = () => {
     console.log("going to display all events in db")
     fetch(`/events`, {
       method: "GET",
@@ -47,17 +60,18 @@ class App extends Component {
     .then(res => res.json())
     .then(data => {
       this.setState({ dbEventList: data})
+      this.puller = setTimeout(this.List, 1 * 1000);
       console.log('Event list from db', data)
     })
     .catch(err => console.log("MyError:", err))
-
   }
 
 
   joinEvent = (idx) => {
     const obj = {
       events_id: idx,
-      users_id: this.state.currentUser.id
+      users_id: this.state.currentUser.id,
+      currentUser: this.state.currentUser.username
     }
     console.log(this.state.currentUser, 'users')
 
@@ -82,11 +96,10 @@ class App extends Component {
       credentials: 'include',
     })
     .then(() => {
-      this.setState({currentUser: null});
+      this.setState({currentUser: null, loggedin: false});
       // If the session is successfully removed then set this.state.currentUser to null
     })
     .catch(err => console.log(err))
-
   };
 
   getLogin(e) {
@@ -106,7 +119,7 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(data => {
-      this.setState({ currentUser: data})
+      this.setState({ currentUser: data, loggedin: true})
       console.log('App.jsx: logged in current user', data)
     })
     .catch(err => console.log("$$MyError:", err))
@@ -134,7 +147,7 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(data => {
-      this.setState({ currentUser: data})
+      this.setState({ currentUser: data, loggedin: true})
       console.log('App.jsx: registered current user', data)
     })
     .catch(err =>
@@ -265,69 +278,69 @@ class App extends Component {
   render() {
     //console.log('currentUser', this.state.currentUser.email )
     return (
-      <div className="Eat-Up">
-
-    {this.state.currentUser && <div>Logged in as {this.state.currentUser.email}</div>}
-
-          <header className="App-header">
-            <h1 className="App-title">Eat-up</h1>
-
-              <div>
-                <button onClick={() => this.openRegistrationModal()}>Registration</button>
-                <Modal isOpen={this.state.isRegistrationModalOpen} onClose={() => this.closeRegistrationModal()}>
-                <p style={{color: 'black'}}>Registration</p>
-                  <Registration getRegistration={(e)=>this.getRegistration(e)}/>
-                  <p><button onClick={() => this.closeRegistrationModal()}>Close</button></p>
+      <body>
+      <div class="admin">
+       <header class="admin__header">
+        <a href="#" class="logo">
+         <h1>Eatup</h1>
+        </a>
+         <div class="toolbar">
+          <button class="btn btn--primary">Preferences</button>
+           {this.state.currentUser && <div>Logged in as {this.state.currentUser.username}</div>}
+         <div>
+           {!this.state.loggedin === true &&<button onClick={() => this.openRegistrationModal()}>Registration</button>}
+            <Modal  isOpen={this.state.isRegistrationModalOpen} onClose={() => this.closeRegistrationModal()}>
+             <p style={{color: 'black'}}>Registration</p>
+              <Registration getRegistration={(e)=>this.getRegistration(e)}/>
+               <p><button onClick={() => this.closeRegistrationModal()}>Close</button></p>
                 </Modal>
-              </div>
-
-              <br></br>
-
-              <div>
-                <button onClick={() => this.openLoginModal()}>Login</button>
-                <Modal isOpen={this.state.isLoginModalOpen} onClose={() => this.closeLoginModal()}>
-                  <p style={{color: 'black'}}>Log in</p>
-                  <Login getLogin={(e)=>this.getLogin(e)}/>
-                   <p><button onClick={() => this.closeLoginModal()}>Close</button></p>
-                </Modal>
-              </div>
-              <br></br>
-              <div>
-              <button onClick={(e)=>this.getLogout(e)}>Logout</button>
-              </div>
-
-          </header>
-          <div className="Geo-finder">
-            {this.geoFindMe()}
-          </div>
-
-
+         </div>
+         <br></br>
+           <div>
+            {this.state.loggedin === false &&<button onClick={() => this.openLoginModal()}>Login</button>}
+             <Modal isOpen={this.state.isLoginModalOpen} onClose={() => this.closeLoginModal()}>
+              <p style={{color: 'black'}}>Log in</p>
+               <Login getLogin={(e)=>this.getLogin(e)}/>
+                <p><button onClick={() => this.closeLoginModal()}>Close</button></p>
+             </Modal>
+           </div>
+           <br></br>
+             {this.state.loggedin === true &&<button onClick={(e)=>this.getLogout(e)}>Logout</button>}
+         </div>
+       </header>
+         <nav class="admin__nav" style={{backgroundImage: "url(" + SideNav1 + ")"}}>
           <div className="eventList">
-            <EventList joinEvent={this.joinEvent} dbEventList={this.state.dbEventList}/>
+           <EventList joinEvent={this.joinEvent} dbEventList={this.state.dbEventList} currentUser={this.state.currentUser}/>
           </div>
+         </nav>
+          <main className="admin__main" style={{backgroundImage: "url(" + MainNav + ")"}}>
+           <div className="dashboard__item dashboard__item--full">
 
-          <br></br>
-       <div>
-         {!this.state.category && <Form getUserInput = {this.getUserInput}/>}
-       </div>
+              <div >
+                {!this.state.category && <Form getUserInput = {this.getUserInput}/>}
+               </div>
 
-       <div>
-        {this.state.create && <Event getEventInput = {(e) => this.getEventInput(e)} restaurant = {this.state.eventRestaurant}/>}
-      </div>
 
-      <div>
-       {this.state.eventName && this.state.currentUser && this.state.events && <EventCurrent events={this.state.events} currentUser={this.state.currentUser.username} joinEvent={this.joinEvent} />}
-      </div>
+              <div class="profile">
 
-     <div>
-       {!this.state.create && <Swipes data = {this.state.data} getEventRestaurant = {this.handleGetSwipeIndex} />}
-   </div>
+                <div>
+                 {this.state.create && !this.state.eventName && <Event getEventInput = {(e) => this.getEventInput(e)} restaurant = {this.state.eventRestaurant}/>}
+                </div>
+                 <div>
+                  {this.state.eventName && this.state.currentUser && this.state.events && <EventCurrent events={this.state.events} currentUser={this.state.currentUser.username} joinEvent={this.joinEvent} />}
+                 </div>
+                  <div>
+                   {!this.state.create && <Swipes data = {this.state.data} getEventRestaurant = {this.handleGetSwipeIndex} />}
+                  </div>
+                   <div className="ToggleButton">
+                    {this.state.category && this.state.currentUser && <ToggleButton create={this.state.create} currentUser={this.state.currentUser.username} handleClick={this.handleEventClick}/>}
+                   </div>
+                   </div>
 
-   <div className="ToggleButton">
-    {this.state.category&&<ToggleButton create={this.state.create} handleClick={this.handleEventClick}/>}
-    </div>
-
-   </div>
+                </div>
+              </main>
+             </div>
+            </body>
  );
 }
 }

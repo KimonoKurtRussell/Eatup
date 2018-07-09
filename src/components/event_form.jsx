@@ -24,24 +24,30 @@ constructor(props) {
 
   console.log("restaurant", this.props.restaurant)
 
-
-
    return (
+     <div className="eventForm">
+    <div style={{ display: (this.state.submit ? 'none': 'block')}}>
+     <form onSubmit={this.props.getEventInput} >
+     <input className="restaurantInfo" type='text' name= 'restaurantName' placeholder="{this.props.restaurant.name}" value={this.props.restaurant.name}/>
+     <br></br>
+     <input className="restaurantInfo" type='text' name= 'restaurantAddress' placeholder="{this.props.restaurant.address}" value={this.props.restaurant.address}/>
+     <br></br>
+     <input type='text' name= 'eventName' placeholder='Event Name' value={this.props.eventName}/>
+     <br></br>
      <div>
-      <form onSubmit={this.props.getEventInput}>
-      <input type='text' name= 'restaurantName' placeholder="{this.props.restaurant.name}" value={this.props.restaurant.name}/>
-      <input type='text' name= 'restaurantAddress' placeholder="{this.props.restaurant.address}" value={this.props.restaurant.address}/>
-      <input type='text' name= 'eventName' placeholder='Event Name' value={this.props.eventName}/>
-      <div>
-      <DateTimePicker type='int' name='start' onChange={this.onChange1} returnValue="start" value={this.state.start} clockDisabled={true} />
-      </div>
-      <div>
-      <DateTimePicker type='int' name='end' onChange={this.onChange2} returnValue="end" value={this.state.end} />
-      </div>
-      <input type='text' name= 'description' placeholder='Event Description ' value={this.props.description}/>
-      <button>Create Event</button>
-     </form>
+     <DateTimePicker className="calendar" type='int' name='start' onChange={this.onChange1} returnValue="start" value={this.state.start}/>
      </div>
+     <br></br>
+     <div>
+     <DateTimePicker className="calendar" type='int' name='end' onChange={this.onChange2} returnValue="end" value={this.state.end} />
+     </div>
+     <br></br>
+     <input type='text' name= 'description' placeholder='Event Description ' value={this.props.description}/>
+     <br></br>
+     <button onClick={this.handleFormSubmit}>Create Event</button>
+    </form>
+    </div>
+    </div>
 
    )
  }
