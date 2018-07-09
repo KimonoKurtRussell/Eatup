@@ -31,17 +31,17 @@ wss.on('connection', (ws) => {
  });
 
  wss.clients.forEach(client => {
-     client.send(JSON.stringify(wss.clients.size));
-   })
+    client.send(JSON.stringify(wss.clients.size));
+  })
  // Set up a callback for when a client closes the socket. This usually means they closed their browser.
  ws.on('close', () => console.log('Client disconnected'));
  users = {
-      type: "userCount",
-      userCount: wss.clients.size
-    };
-    wss.clients.forEach(client => {
-     client.send(JSON.stringify(users));
-    });
+    type: "userCount",
+    userCount: wss.clients.size
+  };
+  wss.clients.forEach(client => {
+    client.send(JSON.stringify(users));
+  });
 });
 
 wss.on('connection', function connection(ws, req) {
@@ -52,25 +52,9 @@ wss.on('connection', function connection(ws, req) {
 const port = process.env.PORT || 8080;
 
 
-
-
-
-//returns all the current events in the db - original
-// app.get('/events', (req, res) => {
-//   knex.select("*")
-//   .from("events")
-//   .then(eventList => {
-//     console.log(eventList)
-//      res.json(eventList)
-//    })
-
-// });
-
 app.get('/events', (req, res) => {
   knex.raw('SELECT * FROM events LEFT JOIN attendees ON events.id  = attendees.events_id LEFT JOIN users ON attendees.users_id = users.id;')
   .then((data) => {
-    //console.log(data.rows)
-
     var eventdata = data.rows.reduce(function(a, e) {
       if (a[e.events_id]) {
         a[e.events_id].names.push(e.name)
@@ -90,7 +74,6 @@ app.get('/events', (req, res) => {
     }, {})
     res.json(eventdata);
     console.log(eventdata);
-
   })
 });
 
@@ -107,16 +90,11 @@ app.post('/joinEvent', (req, res) => {
   .then(results => {
     knex.raw(`select name from users join (select users_id from attendees where events_id = ${req.body.events_id}) as A on users.id = A.users_id`)
     .then(data => {
-
-      console.log('eventid nameS:', data.rows)
-
-        var eventnames = data.rows.map(a => a.name)
-        console.log('EVENTNAMES', eventnames)
-
+      console.log('eventid names:', data.rows)
+      var eventnames = data.rows.map(a => a.name)
+      console.log('EVENTNAMES', eventnames)
       res.json(eventnames)
-
     })
-
   })
 });
 
