@@ -6,8 +6,8 @@ class EventCard extends React.Component {
   constructor(props){
    super(props);
    this.state = {
-    names: this.props.eventInfo.names,
-    message: true
+    names: this.props.eventInfo.names
+    //message: true
    };
   }
 
@@ -30,11 +30,12 @@ class EventCard extends React.Component {
     }
   }
 
-  leaveEvent(){
-    this.setState({
-      message: false
-    })
 
+  leaveEvent(){
+    console.log("getting to leaveEvent func")
+    this.props.leaveEvent(this.props.eventInfo.event_id)
+    .then(res => res.json())
+    .then(names => this.setState({names: names}));
   }
 
 
@@ -53,10 +54,7 @@ class EventCard extends React.Component {
         <h6>Start: {moment(start).format('dddd, MMMM Do YYYY, h:mm a')}</h6>
         <h6>End: {moment(end).format('dddd, MMMM Do YYYY, h:mm a')}</h6>
 
-        {!this.state.message && <div>{this.state.names[0]} and {this.state.names.length - 1} others are going</div>}
-
-        {this.state.message && <div>{this.state.names[0]} and {this.state.names.length} others are going</div>}
-
+        <div>{this.state.names[0]} and {this.state.names.length} are going</div>
         <br></br>
 
         <button onClick={() => this.getNames()}>Join Event</button>
@@ -68,6 +66,4 @@ class EventCard extends React.Component {
 }
 
 export default EventCard;
-// write code that loops over names array in getnames and blocks someone from joining an event
-//if they are already going to that event
 

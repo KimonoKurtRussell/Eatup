@@ -9,6 +9,8 @@ const configuration = require('./knexfile.js')['development']
 const knex = require('knex')(configuration);
 const SocketServer = require('ws').Server;
 
+
+
 app.use(cors());
 app.use(bodyParser.json())
 
@@ -101,10 +103,23 @@ app.post('/joinEvent', (req, res) => {
 });
 
 
-//route to delete users from event
-// app.post('/leaveEvent', (req, res) => {
 
-// });
+//route to delete users from event
+app.post('/leaveEvent', (req, res) => {
+  console.log('deleting attendees', req.body)
+  knex('attendees')
+  .where({users_id: req.body.users_id, events_id: req.body.events_id})
+  .del()
+  .then(results => {
+    knex.raw(`select name from users join (select users_id from attendees where events_id = ${req.body.events_id}) as A on users.id = A.users_id`)
+    .then(data => {
+      console.log('eventid names:', data.rows)
+      var eventnames = data.rows.map(a => a.name)
+      console.log('after delete EVENTNAMES', eventnames)
+      res.json(eventnames)
+    })
+  })
+});
 
 
 app.post('/users/login', (req, res) => {

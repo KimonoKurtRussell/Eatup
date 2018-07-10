@@ -4,6 +4,7 @@ import EventCard from './event_card.jsx'
 
 
 
+
 class EventList extends React.Component {
 
 
@@ -15,7 +16,7 @@ class EventList extends React.Component {
        { Object.values(this.props.dbEventList).map((event, idx) => {
           return (
            <div key={idx}>
-            <EventCard eventInfo={event} joinEvent={this.props.joinEvent} currentUser={this.props.currentUser}/>
+            <EventCard eventInfo={event} joinEvent={this.props.joinEvent} currentUser={this.props.currentUser} leaveEvent={this.props.leaveEvent}/>
            </div>
            )})
         }

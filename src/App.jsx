@@ -74,6 +74,20 @@ class App extends Component {
 
   }
 
+  leaveEvent = (idx) => {
+    const obj = {
+      events_id: idx,
+      users_id: this.state.currentUser.id,
+    }
+    return fetch(`/leaveEvent`, {
+      method: "POST",
+      headers: {
+         'Content-type': 'application/json'
+       },
+      body: JSON.stringify(obj)
+    })
+  }
+
 
   getLogout() {
     console.log('logging out')
@@ -309,7 +323,7 @@ class App extends Component {
 
 
           <div className="eventList">
-            <EventList currentUser={this.state.currentUser} joinEvent={this.joinEvent} dbEventList={this.state.dbEventList}/>
+            <EventList currentUser={this.state.currentUser} joinEvent={this.joinEvent} dbEventList={this.state.dbEventList} leaveEvent={this.leaveEvent}/>
           </div>
 
           <br></br>
