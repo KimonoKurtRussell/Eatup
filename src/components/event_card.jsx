@@ -54,9 +54,10 @@ class EventCard extends React.Component {
         <h6>Start: {moment(start).format('dddd, MMMM Do YYYY, h:mm a')}</h6>
         <h6>End: {moment(end).format('dddd, MMMM Do YYYY, h:mm a')}</h6>
 
-        <div>{this.state.names[0]} and {this.state.names.length} are going</div>
-        <br></br>
+        {this.state.names.length > 1 && <div>{this.state.names[0]} and {this.state.names.length - 1} others are going</div>}
+        {this.state.names.length === 1 && <div>{this.state.names[0]} is going</div>}
 
+        <br></br>
         <button onClick={() => this.getNames()}>Join Event</button>
         <button onClick={() => this.leaveEvent()}>Leave Event</button>
 
@@ -66,4 +67,3 @@ class EventCard extends React.Component {
 }
 
 export default EventCard;
-
