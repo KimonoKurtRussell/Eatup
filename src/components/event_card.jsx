@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { withAlert } from "react-alert";
 
 class EventCard extends React.Component {
 
@@ -15,9 +16,10 @@ class EventCard extends React.Component {
     this.disableButton = true;
     var nameList = this.props.eventInfo.names;
 
+    console.log(this.props);
     if(this.props.currentUser){
       if(this.props.eventInfo.names.includes(this.props.currentUser.username)){
-        alert('You have already joined the event :)')
+        this.props.alert.show('You have already joined the event :)')
         this.disableButton = false;
       } else {
          console.log("getting to getNames func")
@@ -30,17 +32,22 @@ class EventCard extends React.Component {
       }
 
     } else {
-      window.alert("You must log in before joining an event!");
+      this.props.alert.show("You must log in before joining an event!");
       this.disableButton = false;
     }
   }
 
 
   leaveEvent(){
-    console.log("getting to leaveEvent func")
-    this.props.leaveEvent(this.props.eventInfo.event_id)
-    .then(res => res.json())
-    .then(names => this.setState({names: names}));
+    if(this.props.currentUser){
+      console.log("getting to leaveEvent func")
+      this.props.leaveEvent(this.props.eventInfo.event_id)
+      .then(res => res.json())
+      .then(names => this.setState({names: names}));
+    } else {
+      this.props.alert.show('You must log in before leaving an event!')
+    }
+
   }
 
 
@@ -72,4 +79,4 @@ class EventCard extends React.Component {
   }
 }
 
-export default EventCard;
+export default withAlert(EventCard);

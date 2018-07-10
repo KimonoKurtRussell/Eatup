@@ -9,6 +9,8 @@ import ToggleButton from './components/event_button'
 import EventList from './components/event_list'
 import EventCurrent from './components/event_current'
 import Event from './components/event_form'
+import { Provider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
 
 
 
@@ -284,7 +286,15 @@ class App extends Component {
 
 
   render() {
+    const options = {
+      position: 'bottom center',
+      timeout: 5000,
+      offset: '30px',
+      transition: 'scale'
+    }
+
     return (
+      <Provider template={AlertTemplate} {...options}>
       <div className="Eat-Up">
 
     {this.state.currentUser && <div>Logged in as {this.state.currentUser.email}</div>}
@@ -348,6 +358,7 @@ class App extends Component {
     </div>
 
    </div>
+   </Provider>
  );
 }
 }
