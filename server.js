@@ -108,12 +108,20 @@ app.post('/joinEvent', (req, res) => {
   })
 });
 
-// app.post('/leaveEvent', (req, res) => {
-//   // Need to get user ID in here
-//   console.log("Leave event Quitter Names: " + req.body.names)
-//   console.log("Quitter user ids: " + req.body.currentUser)
-// });
-
+app.post('/leaveEvent', (req, res) => {
+ console.log('deleting attendees', req.body)
+ knex('attendees')
+ .where({users_id: req.body.users_id, events_id: req.body.events_id})
+ .del()
+ .then(results => {
+   knex.raw(`select name from users join (select users_id from attendees where events_id = ${req.body.events_id}) as A on users.id = A.users_id`)
+   .then(data => {
+     var eventnames = data.rows.map(a => a.name)
+     // console.log(eventnames)
+     res.json(eventnames)
+   })
+ })
+});
 
 app.post('/users/login', (req, res) => {
   const username = req.body.username;
@@ -214,6 +222,7 @@ app.post('/api/search/:category/:radius/:latitude/:longitude', (req, res) => {
   const radius = req.params.radius
   const latitude = req.params.latitude
   const longitude = req.params.longitude
+  console.log(latitude + "" + longitude)
   client.search({
     latitude: latitude,
     longitude: longitude,

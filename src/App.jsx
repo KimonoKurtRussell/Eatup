@@ -50,8 +50,6 @@ class App extends Component {
     clearInterval(this.puller)
   }
 
-  // HELPER FUNCTION TO MAKE CONSTANT CALLS
-
     List = () => {
     console.log("going to display all events in db")
     fetch(`/events`, {
@@ -60,12 +58,11 @@ class App extends Component {
     .then(res => res.json())
     .then(data => {
       this.setState({ dbEventList: data})
-      this.puller = setTimeout(this.List, 1 * 1000);
+      this.puller = setTimeout(this.List, 2 * 1000);
       console.log('Event list from db', data)
     })
     .catch(err => console.log("MyError:", err))
   }
-
 
   joinEvent = (idx) => {
     const obj = {
@@ -84,6 +81,19 @@ class App extends Component {
     })
   }
 
+  leaveEvent = (idx) => {
+  const obj = {
+    events_id: idx,
+    users_id: this.state.currentUser.id,
+  }
+  return fetch(`/leaveEvent`, {
+    method: "POST",
+    headers: {
+       'Content-type': 'application/json'
+     },
+    body: JSON.stringify(obj)
+  })
+}
 
   getLogout() {
     console.log('logging out')
@@ -119,7 +129,7 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(data => {
-      this.setState({ currentUser: data, loggedin: true})
+      this.setState({ currentUser: data, loggedin: true, isLoginModalOpen: false})
       console.log('App.jsx: logged in current user', data)
     })
     .catch(err => console.log("$$MyError:", err))
@@ -168,7 +178,6 @@ class App extends Component {
       end: e.target.end.value,
       restaurantAddress: e.target.restaurantAddress.value
     })
-
 
   fetch(`http://localhost:8080/events/${e.target.eventName.value}/${e.target.restaurantName.value}/${e.target.restaurantAddress.value}/${e.target.description.value}/${e.target.start.value}/${e.target.end.value}` , {
     method: "POST" ,
@@ -223,8 +232,6 @@ class App extends Component {
     .catch(err => console.log(err))
   };
 
-
-
   // Set local browsers geo-cordinates
   geoFindMe() {
     var output = document.getElementById("out");
@@ -236,6 +243,8 @@ class App extends Component {
       var latitude  = position.coords.latitude;
       var longitude = position.coords.longitude;
       this.setState({latitude: latitude, longitude: longitude});
+      console.log(latitude)
+      console.log(longitude)
     }
     function error() {
       output.innerHTML = "Unable to retrieve your location";
@@ -274,18 +283,33 @@ class App extends Component {
     })
   }
 
+onNavigateHome = () => {
+  this.setState({
+    data: [],
+      category: '',
+      radius: 0,
+      create: false,
+      events: null,
+      eventRestaurant: null,
+      eventName: '',
+      description: '',
+      start: 0,
+      end: 0,
+  })
+}
 
   render() {
     //console.log('currentUser', this.state.currentUser.email )
     return (
       <body>
+        <div>{this.geoFindMe()}</div>
       <div class="admin">
        <header class="admin__header">
         <a href="#" class="logo">
          <h1>Eatup</h1>
         </a>
          <div class="toolbar">
-          <button class="btn btn--primary">Preferences</button>
+          <button class="btn btn--primary" onClick={this.onNavigateHome}>Preferences</button>
            {this.state.currentUser && <div>Logged in as {this.state.currentUser.username}</div>}
          <div>
            {!this.state.loggedin === true &&<button onClick={() => this.openRegistrationModal()}>Registration</button>}
@@ -310,7 +334,7 @@ class App extends Component {
        </header>
          <nav class="admin__nav" style={{backgroundImage: "url(" + SideNav1 + ")"}}>
           <div className="eventList">
-           <EventList joinEvent={this.joinEvent} dbEventList={this.state.dbEventList} currentUser={this.state.currentUser}/>
+           <EventList joinEvent={this.joinEvent} leaveEvent={this.leaveEvent} dbEventList={this.state.dbEventList} currentUser={this.state.currentUser}/>
           </div>
          </nav>
           <main className="admin__main" style={{backgroundImage: "url(" + MainNav + ")"}}>
@@ -327,7 +351,7 @@ class App extends Component {
                  {this.state.create && !this.state.eventName && <Event getEventInput = {(e) => this.getEventInput(e)} restaurant = {this.state.eventRestaurant}/>}
                 </div>
                  <div>
-                  {this.state.eventName && this.state.currentUser && this.state.events && <EventCurrent events={this.state.events} currentUser={this.state.currentUser.username} joinEvent={this.joinEvent} />}
+                  {this.state.eventName && this.state.currentUser && this.state.events && <EventCurrent events={this.state.events} currentUser={this.state.currentUser.username} joinEvent={this.joinEvent} returnHome={this.onNavigateHome}/>}
                  </div>
                   <div>
                    {!this.state.create && <Swipes data = {this.state.data} getEventRestaurant = {this.handleGetSwipeIndex} />}

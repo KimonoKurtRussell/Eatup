@@ -4,7 +4,11 @@ class EventCurrent extends React.Component {
 
   constructor(props){
    super(props);
+  }
 
+  executeClick = () => {
+    this.props.joinEvent(this.props.events.id);
+    this.props.returnHome();
   }
 
   render() {
@@ -21,9 +25,8 @@ class EventCurrent extends React.Component {
         <ul>
           <li>{this.props.currentUser}</li>
         </ul>
-          <button onClick={() => this.props.joinEvent(this.props.events.id)}>CONFIRM</button>
+          <button onClick={() => this.executeClick()}>CONFIRM</button>
       </div>
-
     )
   }
 }
