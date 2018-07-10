@@ -12,11 +12,19 @@ class EventCard extends React.Component {
   }
 
   getNames(){
+    var nameList = this.props.eventInfo.names;
+
     if(this.props.currentUser){
-      console.log("getting to getNames func")
-      this.props.joinEvent(this.props.eventInfo.event_id)
-      .then(res => res.json())
-      .then(names => this.setState({names: names}));
+      if(this.props.eventInfo.names.includes(this.props.currentUser.username)){
+        alert('You have already joined the event :)')
+        return
+      } else {
+         console.log("getting to getNames func")
+        this.props.joinEvent(this.props.eventInfo.event_id)
+        .then(res => res.json())
+        .then(names => this.setState({names: names}));
+      }
+
     } else {
       window.alert("You must log in before joining an event!");
     }
@@ -60,3 +68,6 @@ class EventCard extends React.Component {
 }
 
 export default EventCard;
+// write code that loops over names array in getnames and blocks someone from joining an event
+//if they are already going to that event
+
