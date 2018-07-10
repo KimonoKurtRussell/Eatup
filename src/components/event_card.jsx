@@ -7,7 +7,7 @@ class EventCard extends React.Component {
    super(props);
    this.state = {
     names: this.props.eventInfo.names,
-    users: this.props.eventInfo.names.length,
+    message: true
    };
   }
 
@@ -22,21 +22,9 @@ class EventCard extends React.Component {
     }
   }
 
-  //store users as a number and increment it
-  //pass in id
-  // this.setState((prevState) => {
-   //  console.log({prevState});
-   //  return {
-   //    newNames: prevState.names.filter((name) => {
-   //      return prevState.names.indexOf(name) !== prevState.names.length - 1;
-   //    }),
-   //    otherNewNames: '123'
-   //  }
-   // })
-
   leaveEvent(){
-    this.setState((prevState) => {
-      return {users: prevState.users - 1}
+    this.setState({
+      message: false
     })
 
   }
@@ -54,11 +42,12 @@ class EventCard extends React.Component {
         <h4>{this.props.eventInfo.restaurant_name}</h4>
         <h5>{this.props.eventInfo.restaurant_address}</h5>
         <h6>{this.props.eventInfo.description}</h6>
-        <h6>Start: {moment(start).format('dddd, MMMM Do YYYY, h:mm a')}     End: {moment(end).format('dddd, MMMM Do YYYY, h:mm a')}</h6>
+        <h6>Start: {moment(start).format('dddd, MMMM Do YYYY, h:mm a')}</h6>
+        <h6>End: {moment(end).format('dddd, MMMM Do YYYY, h:mm a')}</h6>
 
+        {!this.state.message && <div>{this.state.names[0]} and {this.state.names.length - 1} others are going</div>}
 
-        <div>{this.state.names[0]} and {this.state.users} others are going</div>
-
+        {this.state.message && <div>{this.state.names[0]} and {this.state.names.length} others are going</div>}
 
         <br></br>
 
