@@ -67,3 +67,5 @@ class EventCard extends React.Component {
 }
 
 export default EventCard;
+
+//fix leave button

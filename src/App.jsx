@@ -206,11 +206,11 @@ class App extends Component {
   getUserInput = (e) => {
    e.preventDefault();
    this.setState({
-     category: e.target.category.value,
+     category: e.target.category.value.toLowerCase(),
      radius: e.target.radius.value,
    });
 
-    fetch(`/api/search/${e.target.category.value}/${e.target.radius.value}/${this.state.latitude}/${this.state.longitude}`, {
+    fetch(`/api/search/${e.target.category.value.toLowerCase()}/${e.target.radius.value}/${this.state.latitude}/${this.state.longitude}`, {
       method: "POST",
       headers: {
         'Content-type': 'application/json'
@@ -219,7 +219,7 @@ class App extends Component {
       body: JSON.stringify({
         latitude: this.state.latitude,
         longitude: this.state.longitude,
-        category: e.target.category.value,
+        category: e.target.category.value.toLowerCase(),
         radius: e.target.radius.value
       })
     })
