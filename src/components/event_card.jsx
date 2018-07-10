@@ -7,26 +7,31 @@ class EventCard extends React.Component {
    super(props);
    this.state = {
     names: this.props.eventInfo.names
-    //message: true
    };
+    this.disableButton = false;
   }
 
   getNames(){
+    this.disableButton = true;
     var nameList = this.props.eventInfo.names;
 
     if(this.props.currentUser){
       if(this.props.eventInfo.names.includes(this.props.currentUser.username)){
         alert('You have already joined the event :)')
-        return
+        this.disableButton = false;
       } else {
          console.log("getting to getNames func")
         this.props.joinEvent(this.props.eventInfo.event_id)
         .then(res => res.json())
-        .then(names => this.setState({names: names}));
+        .then(names => {
+          this.setState({names: names})
+          this.disableButton = false;
+        });
       }
 
     } else {
       window.alert("You must log in before joining an event!");
+      this.disableButton = false;
     }
   }
 
@@ -58,8 +63,9 @@ class EventCard extends React.Component {
         {this.state.names.length === 1 && <div>{this.state.names[0]} is going</div>}
 
         <br></br>
-        <button onClick={() => this.getNames()}>Join Event</button>
-        <button onClick={() => this.leaveEvent()}>Leave Event</button>
+
+        <button disabled={this.disableButton} onClick={() => this.getNames()}>Join Event</button>
+        <button disabled={this.disableButton} onClick={() => this.leaveEvent()}>Leave Event</button>
 
       </div>
     );
@@ -67,5 +73,3 @@ class EventCard extends React.Component {
 }
 
 export default EventCard;
-
-//fix leave button
