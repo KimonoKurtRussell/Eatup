@@ -1,6 +1,9 @@
 import React from 'react';
 import SwipeableViews from 'react-swipeable-views';
 // import NotFound from "./images/notfound.jpg"
+import { bindKeyboard } from 'react-swipeable-views-utils';
+
+const BindKeyboardSwipeableViews = bindKeyboard(SwipeableViews);
 
 class Swipes extends React.Component {
 
@@ -11,7 +14,7 @@ constructor(props){
 
 render (){
  return(
-  <SwipeableViews enableMouseEvents onChangeIndex={this.props.getEventRestaurant}>
+  <BindKeyboardSwipeableViews enableMouseEvents onChangeIndex={this.props.getEventRestaurant}>
 
    {this.props.data.map((restaurant, i) => (
      <div className="restCard">
@@ -39,7 +42,7 @@ render (){
      </div>
 
    ))}
-   </SwipeableViews>
+   </BindKeyboardSwipeableViews>
  );
 }
 };
