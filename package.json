@@ -9,6 +9,7 @@
     "express": "^4.16.2",
     "knex": "^0.15.0",
     "moment": "^2.22.2",
+    "parse-address-string": "0.0.3",
     "pg": "^7.4.3",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",

@@ -1,22 +1,36 @@
 import React from 'react';
 import moment from 'moment';
 import { withAlert } from "react-alert";
+import parseAddress from 'parse-address-string';
 
 class EventCard extends React.Component {
 
   constructor(props){
    super(props);
    this.state = {
-    names: this.props.eventInfo.names
+    names: this.props.eventInfo.names,
+    goodAddress: {}
+
+
    };
     this.disableButton = false;
+  }
+
+  componentDidMount(){
+    parseAddress(this.props.eventInfo.restaurant_address, (err, addr) => {
+      let goodAddress = {};
+      goodAddress.street = addr.street_address1;
+      goodAddress.city = addr.city;
+      goodAddress.province = addr.state;
+      goodAddress.postal_code = addr.postal_code;
+      goodAddress.country = addr.country;
+      this.setState({goodAddress: goodAddress});
+    })
   }
 
   getNames(){
     this.disableButton = true;
     var nameList = this.props.eventInfo.names;
-
-    console.log(this.props);
     if(this.props.currentUser){
       if(this.props.eventInfo.names.includes(this.props.currentUser.username)){
         this.props.alert.show('You have already joined the event :)')
@@ -47,11 +61,10 @@ class EventCard extends React.Component {
     } else {
       this.props.alert.show('You must log in before leaving an event!')
     }
-
   }
 
-
   render() {
+
     var start = this.props.eventInfo.event_start
     var end = this.props.eventInfo.event_end
 
@@ -60,9 +73,13 @@ class EventCard extends React.Component {
     return (
       <div>
         <h3>{this.props.eventInfo.event_name}</h3>
-        <h4>{this.props.eventInfo.restaurant_name}</h4>
-        <h5>{this.props.eventInfo.restaurant_address}</h5>
-        <h6>{this.props.eventInfo.description}</h6>
+        <h4>{this.state.goodAddress.street}</h4>
+        <h5>{this.props.eventInfo.description}</h5>
+
+        <p>{this.state.goodAddress.street}</p>
+        <p>{this.state.goodAddress.city}, {this.state.goodAddress.province}</p>
+        <p>{this.state.goodAddress.country} {this.state.goodAddress.postal_code}</p>
+
         <h6>Start: {moment(start).format('dddd, MMMM Do YYYY, h:mm a')}</h6>
         <h6>End: {moment(end).format('dddd, MMMM Do YYYY, h:mm a')}</h6>
 
