@@ -7,6 +7,7 @@ class EventCard extends React.Component {
 
   constructor(props){
    super(props);
+   console.log(this.props.eventInfo.names)
    this.state = {
     names: this.props.eventInfo.names,
     id: this.props.eventInfo.id
@@ -51,6 +52,8 @@ class EventCard extends React.Component {
     const start = this.props.eventInfo.event_start
     const end = this.props.eventInfo.event_end
 
+    const names = this.state.names[0] ? this.state.names : this.props.eventInfo.names;
+
     return (
       <div>
         <p>{this.props.eventInfo.restaurant_name}</p>
@@ -58,8 +61,8 @@ class EventCard extends React.Component {
         <p className='description'>{this.props.eventInfo.description}</p>
         <p>Start: {moment(start).format('dddd, MMMM Do YYYY, h:mm a')}</p>
         <p>End: {moment(end).format('dddd, MMMM Do YYYY, h:mm a')}</p>
-        {this.state.names.length > 1 && <div>{this.state.names[0]} and {this.state.names.length - 1} others are going</div>}
-        {this.state.names.length === 1 && <div>{this.state.names[0]} is going</div>}
+        {names.length > 1 && <div>{names[0]} and {names.length - 1} others are going</div>}
+        {names.length === 1 && <div>{names[0]} is going</div>}
         <button disabled = {this.disableButton} onClick={() => this.getNames()}>Join Event</button>
         <button disabled = {this.disableButton} onClick={() => this.leaveEvent()}>Leave Event</button>
       </div>

@@ -7,7 +7,10 @@ class EventList extends React.Component {
 
 
   render() {
-    //console.log('event_listdata', this.props.dbEventList)
+    console.log('event_listdata', this.props.dbEventList)
+    Object.values(this.props.dbEventList).map((event, idx) => {
+      console.log(event)
+    });
 
     return (
       <div>

@@ -24,23 +24,17 @@ render (){
       <h2 className="rating">{restaurant.rating}</h2>
       </div>
      </div>
-
       <div className="restInfo">
-
        <h2>{restaurant.name}</h2>
        <div className="price">
        <h5>{restaurant.money}</h5>
        </div>
-
-
        <h3>{restaurant.address}</h3>
        <h3>{restaurant.city} , {restaurant.state}   {restaurant.country} </h3>
        <h5>{restaurant.phone}</h5>
-
        <p className="addressString">{restaurant.addressString}</p>
      </div>
      </div>
-
    ))}
    </BindKeyboardSwipeableViews>
  );

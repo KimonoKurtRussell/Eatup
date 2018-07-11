@@ -66,7 +66,7 @@ const port = process.env.PORT || 8080;
 
 app.get('/events', (req, res) => {
   knex.raw('SELECT * FROM events LEFT JOIN attendees ON events.id  = attendees.events_id LEFT JOIN users ON attendees.users_id = users.id;').then((data) => {
-    //console.log(data.rows)
+    console.log(data.rows)
 
     var eventdata = data.rows.reduce(function(a, e) {
       if (a[e.events_id]) {
@@ -86,7 +86,7 @@ app.get('/events', (req, res) => {
       return a;
     }, {})
     res.json(eventdata);
-    // console.log(eventdata);
+    console.log(eventdata);
 
   })
 });
