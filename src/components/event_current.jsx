@@ -14,11 +14,13 @@ class EventCurrent extends React.Component {
   render() {
 
     return (
-
       <div>
         <h5>{this.props.events.event_name}</h5>
         <h5>{this.props.events.restaurant_name}</h5>
-        <h5>{this.props.events.restaurant_address}</h5>
+         <h5>{this.props.address}</h5>
+         <h5>{this.props.city}</h5>
+         <h5>{this.props.state}</h5>
+         <h5>{this.props.country}</h5>
         <h5>{this.props.events.description}</h5>
         <h5>{this.props.events.event_start} to {this.props.events.event_end}</h5>
         <h5>People Going:</h5>

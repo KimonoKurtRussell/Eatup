@@ -15,9 +15,11 @@ render() {
   }
 
   return (
-    <div onClick={this.props.handleClick}>
+    <div>
+    <button onClick={this.props.handleClick}>
       {text}
-    </div>
+    </button>
+  </div>
   );
 }
 }

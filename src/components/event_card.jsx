@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { withAlert } from 'react-alert';
 
 
 class EventCard extends React.Component {
@@ -19,7 +20,7 @@ class EventCard extends React.Component {
      var nameList = this.props.eventInfo.names;
      if(this.props.currentUser){
        if(this.props.eventInfo.names.includes(this.props.currentUser.username)){
-         alert('You are already attending this event')
+         this.props.alert.show('You are already attending this event')
          this.disableButton = false;
        } else {
          this.props.joinEvent(this.props.eventInfo.event_id)
@@ -31,7 +32,7 @@ class EventCard extends React.Component {
        }
 
      } else {
-       window.alert('You must log in before joining an event');
+       this.props.alert.show('You must log in before joining an event');
        this.disableButton = false;
      }
    }
@@ -42,7 +43,7 @@ class EventCard extends React.Component {
    .then(res => res.json())
    .then(names => this.setState({names: names}));
   } else {
-   window.alert('You must log in before joining an event');
+   this.props.alert.show('You must log in before leaving an event');
  }
  }
 
@@ -51,10 +52,10 @@ class EventCard extends React.Component {
     const end = this.props.eventInfo.event_end
 
     return (
-      <div className='toggleEventInfo'>
+      <div>
         <p>{this.props.eventInfo.restaurant_name}</p>
         <p>{this.props.eventInfo.restaurant_address}</p>
-        <p>{this.props.eventInfo.description}</p>
+        <p className='description'>{this.props.eventInfo.description}</p>
         <p>Start: {moment(start).format('dddd, MMMM Do YYYY, h:mm a')}</p>
         <p>End: {moment(end).format('dddd, MMMM Do YYYY, h:mm a')}</p>
         {this.state.names.length > 1 && <div>{this.state.names[0]} and {this.state.names.length - 1} others are going</div>}
@@ -66,4 +67,4 @@ class EventCard extends React.Component {
   }
 }
 
-export default EventCard;
+export default withAlert(EventCard);
