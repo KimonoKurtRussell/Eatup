@@ -1,4 +1,6 @@
 import React from 'react';
+import moment from 'moment';
+
 
 class EventCurrent extends React.Component {
 
@@ -13,20 +15,22 @@ class EventCurrent extends React.Component {
 
   render() {
 
+    // const start = this.props.events.event_start
+    // const end = this.events.event_end
+    console.log(this.props.city)
+
     return (
-      <div>
-        <h5>{this.props.events.event_name}</h5>
-        <h5>{this.props.events.restaurant_name}</h5>
-         <h5>{this.props.address}</h5>
-         <h5>{this.props.city}</h5>
-         <h5>{this.props.state}</h5>
-         <h5>{this.props.country}</h5>
-        <h5>{this.props.events.description}</h5>
-        <h5>{this.props.events.event_start} to {this.props.events.event_end}</h5>
-        <h5>People Going:</h5>
-        <ul>
-          <li>{this.props.currentUser}</li>
-        </ul>
+      <div class="currentEvent" >
+        <h3 className="hvr-grow">{this.props.events.event_name}</h3>
+        <h5 className="hvr-grow">{this.props.events.restaurant_name}</h5>
+         <h5 className="hvr-grow">{this.props.address}</h5>
+         <h5 className="hvr-grow">{this.props.city}</h5>
+         <h5 className="hvr-grow">{this.props.state}</h5>
+         <h5 className="hvr-grow">{this.props.country}</h5>
+        <h5 className="hvr-grow">{this.props.events.description}</h5>
+        <h5 className="hvr-grow">{moment(this.props.events.event_start).format('dddd, MMMM Do YYYY, h:mm a')}</h5>
+        <h5 className="hvr-grow">{moment(this.props.events.event_end).format('dddd, MMMM Do YYYY, h:mm a')}</h5>
+
           <button onClick={() => this.executeClick()}>CONFIRM</button>
       </div>
     )

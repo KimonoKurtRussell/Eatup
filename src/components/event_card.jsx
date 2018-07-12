@@ -55,16 +55,17 @@ class EventCard extends React.Component {
     const names = this.state.names[0] ? this.state.names : this.props.eventInfo.names;
 
     return (
-      <div>
+      <div className='eventsInside'>
         <p>{this.props.eventInfo.restaurant_name}</p>
         <p>{this.props.eventInfo.restaurant_address}</p>
         <p className='description'>{this.props.eventInfo.description}</p>
         <p>Start: {moment(start).format('dddd, MMMM Do YYYY, h:mm a')}</p>
         <p>End: {moment(end).format('dddd, MMMM Do YYYY, h:mm a')}</p>
-        {names.length > 1 && <div>{names[0]} and {names.length - 1} others are going</div>}
+        {names.length > 2 && <div>{names[0]} and {names.length - 1} others are going</div>}
+        {names.length === 2 && <div>{names[0]} and {names[1]} are going</div>}
         {names.length === 1 && <div>{names[0]} is going</div>}
-        <button disabled = {this.disableButton} onClick={() => this.getNames()}>Join Event</button>
-        <button disabled = {this.disableButton} onClick={() => this.leaveEvent()}>Leave Event</button>
+        <button className='eventButton' disabled = {this.disableButton} onClick={() => this.getNames()}>Join Event</button>
+        <button className='eventButton' disabled = {this.disableButton} onClick={() => this.leaveEvent()}>Leave Event</button>
       </div>
     );
   }

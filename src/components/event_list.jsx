@@ -16,7 +16,7 @@ class EventList extends React.Component {
       <div>
        { Object.values(this.props.dbEventList).map((event, idx) => {
           return (
-            <Collapsible trigger={<h1>{event.event_name}</h1>} key={idx}>
+            <Collapsible className='hvr-grow' trigger={<h1>{event.event_name}</h1>} key={idx}>
            <EventCard eventInfo={event} joinEvent={this.props.joinEvent} leaveEvent={this.props.leaveEvent} currentUser = {this.props.currentUser}/>
           </Collapsible>
         )})

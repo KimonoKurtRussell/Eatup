@@ -12,7 +12,7 @@ import Event from './components/event_form'
 import { Provider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 import SideNav from './images/sidenav7.jpg'
-import MainNav from './images/mainnav.jpeg'
+import MainNav from './images/mainnav3.jpeg'
 import Logo from './images/logo1.jpg'
 import NotFound from './images/notfound.jpg'
 
@@ -318,85 +318,94 @@ onNavigateHome = () => {
   render() {
     //console.log('currentUser', this.state.currentUser.email )
     <div>{this.geoFindMe()}</div>
-    const profileClass = this.state.category ? "profile withBorder" : "profile";
-    const options = {
-     position: 'bottom center',
-     timeout: '5000',
-     offset: '30px',
-     transition: 'scale'
-   }
+      const profileClass = this.state.category ? "profile withBorder" : "profile";
+      const options = {
+       position: 'bottom center',
+       timeout: '5000',
+       offset: '30px',
+       transition: 'scale'
+     }
+     return (
+       <Provider template={AlertTemplate} {...options}>
+       <body>
+       <div className="admin" style={{backgroundImage: "url(" + MainNav + ")"}}>
+        <header className="admin__header">
+         <a className='brand'>
+           <div className='logo'>
+             <img src={Logo} alt=""/>
+           </div>
+         </a>
 
-    return (
-      <Provider template={AlertTemplate} {...options}>
-      <body>
-      <div class="admin">
-       <header class="admin__header">
-        <a className='brand'>
-          <div className='logo'>
-            <img src={Logo}/>
-          </div>
-        </a>
-         <div class="toolbar">
-           {this.state.loggedin === false &&<button onClick={() => this.openLoginModal()}>Login</button>}
-           {!this.state.loggedin === true &&<button onClick={() => this.openRegistrationModal()}>Registration</button>}
-           {this.state.loggedin === true &&<button onClick={(e)=>this.getLogout(e)}>Logout</button>}
+          <div className="toolbar">
+           <div className="loggin">
+            {this.state.loggedin === false &&<button className="btn btn--primary" onClick={() => this.openLoginModal()}>Login</button>}
 
-          <button class="btn btn--primary" onClick={this.onNavigateHome}>Preferences</button>
+            {!this.state.loggedin === true &&<button className="btn btn--primary" onClick={() => this.openRegistrationModal()}>Registration</button>}
+            {this.state.loggedin === true &&<button className="btn btn--primary" onClick={(e)=>this.getLogout(e)}>Logout</button>}
+           <button className="btn btn--primary" onClick={this.onNavigateHome}>Preferences</button>
+           {this.state.currentUser && <div className="userName">Logged in as {this.state.currentUser.username}</div>}
 
-          {this.state.currentUser && <div>{this.state.currentUser.username}</div>}
-        </div>
-      </header>
-      <nav class="admin__nav" style={{backgroundImage: "url(" + SideNav + ")"}}>
-       <div className="eventList">
-        <EventList joinEvent={this.joinEvent} leaveEvent={this.leaveEvent} dbEventList={this.state.dbEventList} currentUser={this.state.currentUser} />
+
+
+           </div>
+
+         </div>
+       </header>
+       <nav className="admin__nav">
+       <div className="eventTag">
+        <p>EVENT LIST</p>
        </div>
-      </nav>
-        <main className="admin__main" style={{backgroundImage: "url(" + MainNav + ")"}}>
+        <div className="eventList">
+         <EventList joinEvent={this.joinEvent} leaveEvent={this.leaveEvent} dbEventList={this.state.dbEventList} currentUser={this.state.currentUser} />
+        </div>
+       </nav>
+         <main className="admin__main">
 
-          <div>
+           <div>
 
-             <Modal  isOpen={this.state.isRegistrationModalOpen} onClose={() => this.closeRegistrationModal()}>
-              <p style={{color: 'black'}}>Registration</p>
-               <Registration getRegistration={(e)=>this.getRegistration(e)}/>
-                <p><button onClick={() => this.closeRegistrationModal()}>Close</button></p>
-                 </Modal>
-          </div>
+              <Modal  isOpen={this.state.isRegistrationModalOpen} onClose={() => this.closeRegistrationModal()}>
+               <p style={{color: 'black'}}>Registration</p>
+                <Registration getRegistration={(e)=>this.getRegistration(e)}/>
+                 <p><button className="modalClose" onClick={() => this.closeRegistrationModal()}></button></p>
+                  </Modal>
+           </div>
 
-          <div>
-            <Modal isOpen={this.state.isLoginModalOpen} onClose={() => this.closeLoginModal()}>
-             <p style={{color: 'black'}}>Log in</p>
-              <Login getLogin={(e)=>this.getLogin(e)}/>
-               <p><button onClick={() => this.closeLoginModal()}>Close</button></p>
-            </Modal>
-          </div>
+           <div>
+             <Modal isOpen={this.state.isLoginModalOpen} onClose={() => this.closeLoginModal()}>
+              <p style={{color: 'black'}}>Log in</p>
+               <Login getLogin={(e)=>this.getLogin(e)}/>
+                <p><button className="modalClose" onClick={() => this.closeLoginModal()}></button></p>
+             </Modal>
+           </div>
 
-           <div className="dashboard__item dashboard__item--full">
-              <div >
-                {!this.state.category && <Form getUserInput = {this.getUserInput}/>}
-               </div>
-
-              <div class= {profileClass}>
-                <div>
-                 {this.state.create && !this.state.eventName && <Event getEventInput = {(e) => this.getEventInput(e)} restaurant = {this.state.eventRestaurant}/>}
+            <div className="dashboard__item dashboard__item--full">
+               <div >
+                 {!this.state.category && <Form getUserInput = {this.getUserInput}/>}
                 </div>
+
+               <div className= {profileClass}>
                  <div>
-                  {this.state.eventName && this.state.currentUser && this.state.events && <EventCurrent events={this.state.events} currentUser={this.state.currentUser.username} joinEvent={this.joinEvent} returnHome={this.onNavigateHome} address={this.state.address} city={this.state.city} state={this.state.state} country={this.state.country} />}
+                  {this.state.create && !this.state.eventName && <Event getEventInput = {(e) => this.getEventInput(e)} restaurant = {this.state.eventRestaurant}/>}
                  </div>
-                  <div>
-                   {!this.state.create && <Swipes data = {this.state.data} getEventRestaurant = {this.handleGetSwipeIndex} />}
+
+                   <div>
+                    {!this.state.create && <Swipes data = {this.state.data} getEventRestaurant = {this.handleGetSwipeIndex} />}
+                   </div>
+                    <div className="ToggleButton">
+                     {this.state.category && this.state.currentUser && <ToggleButton create={this.state.create} currentUser={this.state.currentUser.username} handleClick={this.handleEventClick}/>}
+                    </div>
+                    </div>
+                    <div>
+                   {this.state.eventName && this.state.currentUser && this.state.events && <EventCurrent events={this.state.events} currentUser={this.state.currentUser.username} joinEvent={this.joinEvent} returnHome={this.onNavigateHome} address={this.state.address} city={this.state.city} state={this.state.state} country={this.state.country} />}
                   </div>
-                   <div className="ToggleButton">
-                    {this.state.category && this.state.currentUser && <ToggleButton create={this.state.create} currentUser={this.state.currentUser.username} handleClick={this.handleEventClick}/>}
-                   </div>
-                   </div>
 
-                </div>
-              </main>
-             </div>
-            </body>
-          </Provider>
- );
-}
-}
+                 </div>
+               </main>
+              </div>
+             </body>
+           </Provider>
+  );
+ }
+ }
 
-export default App;
+ export default App;

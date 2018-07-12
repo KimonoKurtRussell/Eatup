@@ -32,11 +32,6 @@ handleFormSubmit = () => {
 
 render() {
 
-
- console.log("restaurant", this.props.restaurant)
-
-
-
   return (
    <div className="eventForm">
     <div style={{ display: (this.state.submit ? 'none': 'block')}}>
@@ -54,18 +49,18 @@ render() {
      <input className="eventInfo" type='text' name= 'country' value={this.props.restaurant.country}/>
      <br></br>
 
-     <div>
+     <div className='startEnd'>
+      <p>Start End</p>
      <DateTimePicker className="calendar" type='int' name='start' onChange={this.onChange1} returnValue="start" value={this.state.start}/>
-     </div>
-     <br></br>
-     <div>
      <DateTimePicker className="calendar" type='int' name='end' onChange={this.onChange2} returnValue="end" value={this.state.end} />
      </div>
      <br></br>
      <textarea className="eventDescription" rows="4" cols="20" maxlength="250" type='text' name= 'description' placeholder='Event Description ' value={this.props.description}/>
      <br></br>
      <input className="hiddenRestaurantInfo" type='text' name= 'restaurantAddress' placeholder="{this.props.restaurant.address}" value={this.props.restaurant.addressString}/>
-     <button onClick={this.handleFormSubmit}>Create Event</button>
+     <div className='createEvent'>
+    <button onClick={this.handleFormSubmit}>Create Event</button>
+    </div>
     </form>
     </div>
     </div>
