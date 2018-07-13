@@ -10,6 +10,7 @@ node_modules/
 /build
 
 # misc
+.dotenv
 .DS_Store
 .env.local
 .env.development.local
