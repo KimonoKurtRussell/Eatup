@@ -27,11 +27,14 @@ class EventCurrent extends React.Component {
          <h5 className="hvr-grow">{this.props.city}</h5>
          <h5 className="hvr-grow">{this.props.state}</h5>
          <h5 className="hvr-grow">{this.props.country}</h5>
+         <h4>Description</h4>
         <h5 className="hvr-grow">{this.props.events.description}</h5>
+        <h4>Start</h4>
         <h5 className="hvr-grow">{moment(this.props.events.event_start).format('dddd, MMMM Do YYYY, h:mm a')}</h5>
+        <h4>End</h4>
         <h5 className="hvr-grow">{moment(this.props.events.event_end).format('dddd, MMMM Do YYYY, h:mm a')}</h5>
 
-          <button onClick={() => this.executeClick()}>CONFIRM</button>
+          <button className='confirmButton' onClick={() => this.executeClick()}>CONFIRM</button>
       </div>
     )
   }

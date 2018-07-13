@@ -343,7 +343,7 @@ onNavigateHome = () => {
             {!this.state.loggedin === true &&<button className="btn btn--primary" onClick={() => this.openRegistrationModal()}>Registration</button>}
             {this.state.loggedin === true &&<button className="btn btn--primary" onClick={(e)=>this.getLogout(e)}>Logout</button>}
            <button className="btn btn--primary" onClick={this.onNavigateHome}>Preferences</button>
-           {this.state.currentUser && <div className="userName">Logged in as {this.state.currentUser.username}</div>}
+           {this.state.currentUser && <div className="userName">{this.state.currentUser.username}</div>}
 
 
 

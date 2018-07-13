@@ -50,7 +50,7 @@ render() {
      <br></br>
 
      <div className='startEnd'>
-      <p>Start End</p>
+      <h4>Start End</h4>
      <DateTimePicker className="calendar" type='int' name='start' onChange={this.onChange1} returnValue="start" value={this.state.start}/>
      <DateTimePicker className="calendar" type='int' name='end' onChange={this.onChange2} returnValue="end" value={this.state.end} />
      </div>
